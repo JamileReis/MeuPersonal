@@ -26,4 +26,8 @@ public abstract class BaseEntity {
     public void registrarAtualizacao() {
         this.atualizadoEm = System.currentTimeMillis();
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 }
