@@ -49,4 +49,5 @@ public class TrainingPreferences {
 
         return equipamentos != null
                 && equipamentos.contains(equipamentoNecessario);
+    }
 }
