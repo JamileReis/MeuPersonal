@@ -10,7 +10,6 @@ import androidx.room.PrimaryKey;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,21 +47,32 @@ public class MusculoskeletalProfile {
     private List<MusculoskeletalCondition> condicoes =
             new ArrayList<>();
 
-    public void addCondition(MusculoskeletalCondition condicao) {
+    public Long getId() {
+        return id;
+    }
+
+
+    public void addCondicao(MusculoskeletalCondition condicao) {
         if (condicao != null && !condicoes.contains(condicao)) {
             condicoes.add(condicao);
         }
     }
 
-    public void removeCondition(Long id) {
+    public void removeCondicao(Long id) {
         if (id == null) {
             return;
         }
 
-        condicoes.removeIf(condicao ->
-                condicao != null
-                        && Objects.equals(condicao.getId(), id)
-        );
+        for (int i = 0; i < condicoes.size(); i++) {
+            MusculoskeletalCondition condicao = condicoes.get(i);
+
+            if (condicao != null
+                    && condicao.getId() != null
+                    && condicao.getId().equals(id)) {
+                condicoes.remove(i);
+                return;
+            }
+        }
     }
 
     public boolean hasRestriction() {

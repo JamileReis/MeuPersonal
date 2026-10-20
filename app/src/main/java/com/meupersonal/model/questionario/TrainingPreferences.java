@@ -38,17 +38,7 @@ public class TrainingPreferences {
         return equipamentos != null && !equipamentos.isEmpty();
     }
 
-    public boolean isCompatibleWith(Exercise exercicio) {
-        if (exercicio == null) {
-            return false;
-        }
-
-        Equipment equipamentoNecessario = exercicio.getEquipamento();
-
-        if (equipamentoNecessario == null) {
-            return true;
-        }
-
+    public boolean hasEquipment(Equipment equipamentoNecessario) {
         return equipamentos != null
                 && equipamentos.contains(equipamentoNecessario);
     }

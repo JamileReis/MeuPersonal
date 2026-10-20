@@ -24,8 +24,15 @@ public class MusculoskeletalCondition {
 
     private String restricao;
 
+    public Long getId() {
+        return id;
+    }
+    public String getRestricao() {
+        return restricao;
+    }
     public boolean requiresAdaptation() {
         return (restricao != null && !restricao.isBlank())
                 || gravidade == Severity.ALTA;
     }
+
 }
