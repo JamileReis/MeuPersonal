@@ -4,6 +4,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.meupersonal.model.treino.Exercise;
+
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;

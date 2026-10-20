@@ -23,8 +23,8 @@ public class Comorbidity {
     private Severity gravidade;
 
     public boolean isRelevantToTraining() {
-        return gravidade == Severity.MODERATE
-                || gravidade == Severity.HIGH;
+        return gravidade == Severity.MODERADA
+                || gravidade == Severity.ALTA;
     }
 
     public String getDescription() {
