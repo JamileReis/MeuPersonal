@@ -7,13 +7,6 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity(
         tableName = "treinos",
         foreignKeys = @ForeignKey(
@@ -34,6 +27,72 @@ public class Workout {
     private Integer duracaoMinutos;
     @androidx.room.Ignore
     private List<Exercise> exercises = new ArrayList<>();
+
+    public Workout(Long id, List<Exercise> exercises, DayOfWeek diaDaSemana, Integer duracaoMinutos, String descricao, String nome, Long workoutPlanId) {
+        this.id = id;
+        this.exercises = exercises;
+        this.diaDaSemana = diaDaSemana;
+        this.duracaoMinutos = duracaoMinutos;
+        this.descricao = descricao;
+        this.nome = nome;
+        this.workoutPlanId = workoutPlanId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getWorkoutPlanId() {
+        return workoutPlanId;
+    }
+
+    public void setWorkoutPlanId(Long workoutPlanId) {
+        this.workoutPlanId = workoutPlanId;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public DayOfWeek getDiaDaSemana() {
+        return diaDaSemana;
+    }
+
+    public void setDiaDaSemana(DayOfWeek diaDaSemana) {
+        this.diaDaSemana = diaDaSemana;
+    }
+
+    public Integer getDuracaoMinutos() {
+        return duracaoMinutos;
+    }
+
+    public void setDuracaoMinutos(Integer duracaoMinutos) {
+        this.duracaoMinutos = duracaoMinutos;
+    }
+
+    public List<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
+    }
 
     public void addExercise(Exercise exercise) {
         if (exercise != null) {

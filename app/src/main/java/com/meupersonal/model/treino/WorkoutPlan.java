@@ -2,19 +2,12 @@ package com.meupersonal.model.treino;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
 import com.meupersonal.model.questionario.GoalType;
 
 import java.util.Date;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity(tableName = "planos_treino")
 public class WorkoutPlan {
 
@@ -26,6 +19,63 @@ public class WorkoutPlan {
     private GoalType objetivo;
     private Date geradoEm;
     private PlanStatus status;
+
+    public WorkoutPlan(Long id, Long userID, String nome, GoalType objetivo, Date geradoEm, PlanStatus status) {
+        this.id = id;
+        this.userID = userID;
+        this.nome = nome;
+        this.objetivo = objetivo;
+        this.geradoEm = geradoEm;
+        this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public GoalType getObjetivo() {
+        return objetivo;
+    }
+
+    public void setObjetivo(GoalType objetivo) {
+        this.objetivo = objetivo;
+    }
+
+    public Date getGeradoEm() {
+        return geradoEm;
+    }
+
+    public void setGeradoEm(Date geradoEm) {
+        this.geradoEm = geradoEm;
+    }
+
+    public PlanStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PlanStatus status) {
+        this.status = status;
+    }
 
     public void addWorkout(Workout workout) {
     }

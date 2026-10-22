@@ -11,13 +11,6 @@ import androidx.room.PrimaryKey;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity(
         tableName = "perfis_musculoesqueleticos",
         foreignKeys = @ForeignKey(
@@ -46,6 +39,68 @@ public class MusculoskeletalProfile {
     @Ignore
     private List<MusculoskeletalCondition> condicoes =
             new ArrayList<>();
+
+    public MusculoskeletalProfile(long id, long questionarioId, boolean temDor, String descricaoDor, BodyRegion localDor, String movimentoRestricao, List<MusculoskeletalCondition> condicoes) {
+        this.id = id;
+        this.questionarioId = questionarioId;
+        this.temDor = temDor;
+        this.descricaoDor = descricaoDor;
+        this.localDor = localDor;
+        this.movimentoRestricao = movimentoRestricao;
+        this.condicoes = condicoes;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getQuestionarioId() {
+        return questionarioId;
+    }
+
+    public void setQuestionarioId(long questionarioId) {
+        this.questionarioId = questionarioId;
+    }
+
+    public boolean isTemDor() {
+        return temDor;
+    }
+
+    public void setTemDor(boolean temDor) {
+        this.temDor = temDor;
+    }
+
+    public String getDescricaoDor() {
+        return descricaoDor;
+    }
+
+    public void setDescricaoDor(String descricaoDor) {
+        this.descricaoDor = descricaoDor;
+    }
+
+    public BodyRegion getLocalDor() {
+        return localDor;
+    }
+
+    public void setLocalDor(BodyRegion localDor) {
+        this.localDor = localDor;
+    }
+
+    public String getMovimentoRestricao() {
+        return movimentoRestricao;
+    }
+
+    public void setMovimentoRestricao(String movimentoRestricao) {
+        this.movimentoRestricao = movimentoRestricao;
+    }
+
+    public List<MusculoskeletalCondition> getCondicoes() {
+        return condicoes;
+    }
+
+    public void setCondicoes(List<MusculoskeletalCondition> condicoes) {
+        this.condicoes = condicoes;
+    }
 
     public Long getId() {
         return id;

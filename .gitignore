@@ -1,15 +1,23 @@
-*.iml
-.gradle
+
+# Configurações locais e segredos
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/secrets.properties
+/app/secrets.properties
+.env
+.env.*
+
+# Gradle e arquivos gerados
+.gradle/
+build/
+app/build/
+
+# Configurações da IDE
+.idea/
+*.iml
+
+# Arquivos do sistema
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+
+# Servi�os de IA com chave embutida
+/app/src/main/java/com/meupersonal/service/ia/GeminiAiService.java
+/app/src/main/java/com/meupersonal/service/ia/AiService.java

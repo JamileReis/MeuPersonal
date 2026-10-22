@@ -3,15 +3,7 @@ package com.meupersonal.model.user;
 import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
 
-
-@Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity {
 
     @PrimaryKey(autoGenerate = true)
@@ -25,5 +17,29 @@ public abstract class BaseEntity {
 
     public void registrarAtualizacao() {
         this.atualizadoEm = System.currentTimeMillis();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(long criadoEm) {
+        this.criadoEm = criadoEm;
+    }
+
+    public long getAtualizadoEm() {
+        return atualizadoEm;
+    }
+
+    public void setAtualizadoEm(long atualizadoEm) {
+        this.atualizadoEm = atualizadoEm;
     }
 }

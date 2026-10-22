@@ -4,13 +4,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity(
         tableName = "questionarios",
         indices = {@Index(value = {"userId"})}
@@ -19,10 +13,34 @@ public class Questionnaire {
 
     @PrimaryKey(autoGenerate = true)
     private Long id;
-
     private Long userId;
     private Boolean completado = false;
     private Boolean completadoAt;
+
+    public Questionnaire(Long id, Long userId, Boolean completado, Boolean completadoAt) {
+        this.id = id;
+        this.userId = userId;
+        this.completado = completado;
+        this.completadoAt = completadoAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public Boolean getCompletado() {
+        return completado;
+    }
+
+    public Boolean getCompletadoAt() {
+        return completadoAt;
+    }
+
+
 
     public boolean validar() {
         return userId != null && userId > 0;

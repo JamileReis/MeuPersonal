@@ -2,21 +2,12 @@ package com.meupersonal.model.treino;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity(tableName = "exercicios")
 public class Exercise {
 
     @PrimaryKey(autoGenerate = true)
     private Long id;
-
     private String nome;
     private String descricao;
     private MuscleGroup misturaGrupo;
@@ -26,6 +17,55 @@ public class Exercise {
     private Integer segundosDescanso;
     private String intensidade;
     private Double carga;
+
+    public Exercise(Long id, String nome, String descricao, MuscleGroup misturaGrupo, String instrucao, Integer series, Integer repeticoes, Integer segundosDescanso, String intensidade, Double carga) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.misturaGrupo = misturaGrupo;
+        this.instrucao = instrucao;
+        this.series = series;
+        this.repeticoes = repeticoes;
+        this.segundosDescanso = segundosDescanso;
+        this.intensidade = intensidade;
+        this.carga = carga;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public MuscleGroup getMisturaGrupo() {
+        return misturaGrupo;
+    }
+
+    public String getInstrucao() {
+        return instrucao;
+    }
+
+    public Integer getSeries() {
+        return series;
+    }
+
+    public Integer getRepeticoes() {
+        return repeticoes;
+    }
+
+    public Integer getSegundosDescanso() {
+        return segundosDescanso;
+    }
+
+    public String getIntensidade() {
+        return intensidade;
+    }
+
+    public Double getCarga() {
+        return carga;
+    }
 
     public Long getId() {
         return id;
