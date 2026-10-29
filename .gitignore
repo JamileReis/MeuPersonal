@@ -18,6 +18,3 @@ app/build/
 # Arquivos do sistema
 .DS_Store
 
-# Serviços de IA com chave embutida
-/app/src/main/java/com/meupersonal/service/ia/GeminiAiService.java
-/app/src/main/java/com/meupersonal/service/ia/AiService.java

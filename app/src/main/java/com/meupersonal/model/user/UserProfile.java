@@ -5,11 +5,6 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
-
 @Entity(
         tableName = "perfis_usuarios",
         foreignKeys = @ForeignKey(

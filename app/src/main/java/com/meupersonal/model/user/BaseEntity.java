@@ -3,7 +3,6 @@ package com.meupersonal.model.user;
 import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
 
-
 public abstract class BaseEntity {
 
     @PrimaryKey(autoGenerate = true)
@@ -14,10 +13,6 @@ public abstract class BaseEntity {
 
     @ColumnInfo(name = "atualizado_em")
     private long atualizadoEm = System.currentTimeMillis();
-
-    public void registrarAtualizacao() {
-        this.atualizadoEm = System.currentTimeMillis();
-    }
 
     public long getId() {
         return id;
@@ -41,5 +36,9 @@ public abstract class BaseEntity {
 
     public void setAtualizadoEm(long atualizadoEm) {
         this.atualizadoEm = atualizadoEm;
+    }
+
+    public void registrarAtualizacao() {
+        this.atualizadoEm = System.currentTimeMillis();
     }
 }

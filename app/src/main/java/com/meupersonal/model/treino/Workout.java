@@ -1,8 +1,13 @@
 package com.meupersonal.model.treino;
 
+import android.os.Build;
+
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,23 +19,43 @@ import java.util.List;
                 parentColumns = "id",
                 childColumns = "workoutPlanId",
                 onDelete = ForeignKey.CASCADE
-        )
+        ),
+        indices = {
+                @Index(value = "workoutPlanId")
+        }
 )
 public class Workout {
 
     @PrimaryKey(autoGenerate = true)
     private Long id;
+
     private Long workoutPlanId;
     private String nome;
     private String descricao;
     private DayOfWeek diaDaSemana;
     private Integer duracaoMinutos;
-    @androidx.room.Ignore
+
+    @Ignore
     private List<Exercise> exercises = new ArrayList<>();
 
-    public Workout(Long id, List<Exercise> exercises, DayOfWeek diaDaSemana, Integer duracaoMinutos, String descricao, String nome, Long workoutPlanId) {
+    public Workout() {
+        this.exercises = new ArrayList<>();
+    }
+
+    @Ignore
+    public Workout(
+            Long id,
+            List<Exercise> exercises,
+            DayOfWeek diaDaSemana,
+            Integer duracaoMinutos,
+            String descricao,
+            String nome,
+            Long workoutPlanId
+    ) {
         this.id = id;
-        this.exercises = exercises;
+        this.exercises = exercises != null
+                ? new ArrayList<>(exercises)
+                : new ArrayList<>();
         this.diaDaSemana = diaDaSemana;
         this.duracaoMinutos = duracaoMinutos;
         this.descricao = descricao;
@@ -87,16 +112,21 @@ public class Workout {
     }
 
     public List<Exercise> getExercises() {
+        if (exercises == null) {
+            exercises = new ArrayList<>();
+        }
         return exercises;
     }
 
     public void setExercises(List<Exercise> exercises) {
-        this.exercises = exercises;
+        this.exercises = exercises != null
+                ? new ArrayList<>(exercises)
+                : new ArrayList<>();
     }
 
     public void addExercise(Exercise exercise) {
         if (exercise != null) {
-            exercises.add(exercise);
+            getExercises().add(exercise);
         }
     }
 
@@ -105,13 +135,10 @@ public class Workout {
             return;
         }
 
-        for (int i = 0; i < exercises.size(); i++) {
-            Exercise exercise = exercises.get(i);
-
-            if (id.equals(exercise.getId())) {
-                exercises.remove(i);
-                return;
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getExercises().removeIf(
+                    exercise -> id.equals(exercise.getId())
+            );
         }
     }
 

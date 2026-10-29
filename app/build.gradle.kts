@@ -1,9 +1,27 @@
+
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
 
+
+val propriedadesLocais = Properties().apply {
+    val arquivo = rootProject.file("local.properties")
+    if (arquivo.exists()) {
+        arquivo.inputStream().use {
+            load(it)
+        }
+    }
+}
+
+val supabaseUrl = propriedadesLocais.getProperty("SUPABASE_URL", "")
+val supabaseChave = propriedadesLocais.getProperty("SUPABASE_PUBLISHABLE_KEY", "")
+val geminiApiKey = propriedadesLocais.getProperty("GEMINI_API_KEY", "")
+
 android {
     namespace = "com.meupersonal"
+
     compileSdk {
         version = release(37)
     }
@@ -16,6 +34,27 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "SUPABASE_URL",
+            "\"$supabaseUrl\""
+        )
+
+        buildConfigField(
+            "String",
+            "SUPABASE_PUBLISHABLE_KEY",
+            "\"$supabaseChave\""
+        )
+        buildConfigField(
+            "String",
+            "GEMINI_API_KEY",
+            "\"${geminiApiKey.replace("\"", "\\\"")}\""
+        )
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -25,9 +64,12 @@ android {
             }
         }
     }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 }
 
@@ -48,4 +90,8 @@ dependencies {
 
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
 }

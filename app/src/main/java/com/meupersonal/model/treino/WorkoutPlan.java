@@ -7,7 +7,6 @@ import com.meupersonal.model.questionario.GoalType;
 
 import java.util.Date;
 
-
 @Entity(tableName = "planos_treino")
 public class WorkoutPlan {
 
@@ -20,7 +19,17 @@ public class WorkoutPlan {
     private Date geradoEm;
     private PlanStatus status;
 
-    public WorkoutPlan(Long id, Long userID, String nome, GoalType objetivo, Date geradoEm, PlanStatus status) {
+    public WorkoutPlan() {
+    }
+
+    public WorkoutPlan(
+            Long id,
+            Long userID,
+            String nome,
+            GoalType objetivo,
+            Date geradoEm,
+            PlanStatus status
+    ) {
         this.id = id;
         this.userID = userID;
         this.nome = nome;
@@ -78,9 +87,19 @@ public class WorkoutPlan {
     }
 
     public void addWorkout(Workout workout) {
+        if (workout == null) {
+            throw new IllegalArgumentException(
+                    "O treino não pode ser nulo."
+            );
+        }
     }
 
     public void removeWorkout(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException(
+                    "O ID do treino não pode ser nulo."
+            );
+        }
     }
 
     public void ativar() {
