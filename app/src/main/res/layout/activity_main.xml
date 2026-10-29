@@ -60,14 +60,13 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Botão de Ação IA -->
     <Button
         android:id="@+id/btnGenerateWorkout"
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Gerar Novo Treino com IA (Gemini)"
+        android:text="Gerar Treino"
         app:icon="@android:drawable/ic_menu_add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +83,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnGenerateWorkout" />
 
-    <!-- Lista de Histórico -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvWorkoutHistory"
         android:layout_width="0dp"

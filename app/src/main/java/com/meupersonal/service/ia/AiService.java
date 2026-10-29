@@ -17,4 +17,3 @@ public interface AiService {
 
     String sendPrompt(String prompt) throws IOException;
 }
-

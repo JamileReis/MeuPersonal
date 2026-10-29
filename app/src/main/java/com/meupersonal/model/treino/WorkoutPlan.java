@@ -1,11 +1,15 @@
 package com.meupersonal.model.treino;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.meupersonal.model.questionario.GoalType;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Entity(tableName = "planos_treino")
 public class WorkoutPlan {
@@ -18,6 +22,8 @@ public class WorkoutPlan {
     private GoalType objetivo;
     private Date geradoEm;
     private PlanStatus status;
+    @Ignore
+    private List<Workout> workouts = new ArrayList<>();
 
     public WorkoutPlan() {
     }
@@ -86,12 +92,22 @@ public class WorkoutPlan {
         this.status = status;
     }
 
+    public List<Workout> getWorkouts() {
+        if (workouts == null) workouts = new ArrayList<>();
+        return workouts;
+    }
+
+    public void setWorkouts(List<Workout> workouts) {
+        this.workouts = workouts == null ? new ArrayList<>() : new ArrayList<>(workouts);
+    }
+
     public void addWorkout(Workout workout) {
         if (workout == null) {
             throw new IllegalArgumentException(
                     "O treino não pode ser nulo."
             );
         }
+        getWorkouts().add(workout);
     }
 
     public void removeWorkout(Long id) {
@@ -99,6 +115,11 @@ public class WorkoutPlan {
             throw new IllegalArgumentException(
                     "O ID do treino não pode ser nulo."
             );
+        }
+        Iterator<Workout> iterator = getWorkouts().iterator();
+        while (iterator.hasNext()) {
+            Workout workout = iterator.next();
+            if (id.equals(workout.getId())) iterator.remove();
         }
     }
 
@@ -111,6 +132,6 @@ public class WorkoutPlan {
     }
 
     public Integer getTotalWorkouts() {
-        return 0;
+        return getWorkouts().size();
     }
 }
