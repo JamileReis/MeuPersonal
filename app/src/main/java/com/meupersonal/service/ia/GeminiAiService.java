@@ -1,6 +1,4 @@
 package com.meupersonal.service.ia;
-
-
 import android.util.Base64;
 
 import com.meupersonal.BuildConfig;
@@ -19,15 +17,19 @@ import java.nio.charset.StandardCharsets;
 
 public class GeminiAiService implements AiService {
     public static final String API_KEY = BuildConfig.GEMINI_API_KEY;
-    private static final String API_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/"
-                    + "gemini-3.8-flash:generateContent";
-    private static final String FALLBACK_API_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/"
-                    + "gemini-2.5-flash:generateContent";
-    private static final String IMAGE_API_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/"
-                    + "gemini-2.5-flash-image:generateContent";
+    private static final String BASE =
+            "https://generativelanguage.googleapis.com/v1beta/models/";
+
+    private static final String API_URL = BASE + "gemini-3.8-flash:generateContent";
+
+    private static final String[] FALLBACK_URLS = {
+            BASE + "gemini-3.7-flash:generateContent",
+            BASE + "gemini-3.5-flash:generateContent",
+            BASE + "gemini-3.5-flash-lite:generateContent"
+    };
+
+    private static final String IMAGE_API_URL = BASE + "gemini-2.5-flash-image:generateContent";
+
     private static final int MAX_TENTATIVAS = 3;
     private static final String SYSTEM_PROMPT =
             "Você é o assistente de treino do MeuPersonal. "
@@ -37,7 +39,7 @@ public class GeminiAiService implements AiService {
 
     private static final int TEMPO_CONEXAO_MS = 20_000;
     private static final int TEMPO_RESPOSTA_MS = 90_000;
-    private static final int MAX_TOKENS = 8192;
+    private static final int MAX_TOKENS = 32768;
 
     private final String chaveApi;
 
@@ -157,7 +159,6 @@ public class GeminiAiService implements AiService {
         return executar(prompt, false, 0.7);
     }
 
-    /** Gera uma ilustração real do treino (bytes PNG/JPEG), não uma descrição textual. */
     public byte[] generateWorkoutImage(String workoutName, String exerciseNames)
             throws IOException {
         if (workoutName == null || workoutName.trim().isEmpty()) {
@@ -204,33 +205,55 @@ public class GeminiAiService implements AiService {
         }
     }
 
+    private JSONObject montarCorpo(String prompt, boolean respostaJson,
+                                   double temperatura, boolean comThinking)
+            throws JSONException {
+        JSONObject configuracao = new JSONObject()
+                .put("temperature", temperatura)
+                .put("maxOutputTokens", MAX_TOKENS);
+        if (respostaJson) configuracao.put("responseMimeType", "application/json");
+        if (comThinking) {
+            configuracao.put("thinkingConfig", new JSONObject().put("thinkingLevel", "low"));
+        }
+        JSONObject instrucaoSistema = new JSONObject().put("parts", new JSONArray()
+                .put(new JSONObject().put("text", SYSTEM_PROMPT)));
+        JSONObject conteudoUsuario = new JSONObject().put("parts", new JSONArray()
+                .put(new JSONObject().put("text", prompt)));
+        return new JSONObject()
+                .put("systemInstruction", instrucaoSistema)
+                .put("contents", new JSONArray().put(conteudoUsuario))
+                .put("generationConfig", configuracao);
+    }
+
     private String executar(String prompt, boolean respostaJson, double temperatura)
             throws IOException {
         try {
-            JSONObject configuracao = new JSONObject()
-                    .put("temperature", temperatura)
-                    .put("maxOutputTokens", MAX_TOKENS);
-            if (respostaJson) configuracao.put("responseMimeType", "application/json");
-            JSONObject instrucaoSistema = new JSONObject().put("parts", new JSONArray()
-                    .put(new JSONObject().put("text", SYSTEM_PROMPT)));
-            JSONObject conteudoUsuario = new JSONObject().put("parts", new JSONArray()
-                    .put(new JSONObject().put("text", prompt)));
-            JSONObject body = new JSONObject()
-                    .put("systemInstruction", instrucaoSistema)
-                    .put("contents", new JSONArray().put(conteudoUsuario))
-                    .put("generationConfig", configuracao);
-            String resposta;
-            try {
-                resposta = postJson(API_URL, body);
-            } catch (IOException erroPrincipal) {
-                String mensagem = erroPrincipal.getMessage();
-                if (mensagem == null || !mensagem.contains("HTTP 503")) throw erroPrincipal;
+            String[] urls = new String[FALLBACK_URLS.length + 1];
+            urls[0] = API_URL;
+            System.arraycopy(FALLBACK_URLS, 0, urls, 1, FALLBACK_URLS.length);
+
+            String resposta = null;
+            IOException ultimoErro = null;
+
+            for (int i = 0; i < urls.length; i++) {
+                JSONObject body = montarCorpo(prompt, respostaJson, temperatura, i == 0);
                 try {
-                    resposta = postJson(FALLBACK_API_URL, body);
-                } catch (IOException erroReserva) {
-                    throw new IOException("O Gemini principal e o modelo reserva estão temporariamente indisponíveis. "
-                            + "Tente novamente em instantes. Detalhe: " + erroReserva.getMessage(), erroReserva);
+                    resposta = postJson(urls[i], body);
+                    break;
+                } catch (IOException e) {
+                    ultimoErro = e;
+                    String m = e.getMessage() == null ? "" : e.getMessage();
+                    boolean tentarProximo = m.contains("HTTP 503")
+                            || m.contains("HTTP 404")
+                            || m.contains("HTTP 429");
+                    if (!tentarProximo) throw e;
                 }
+            }
+
+            if (resposta == null) {
+                throw new IOException("Os modelos do Gemini estão temporariamente indisponíveis. "
+                        + "Tente novamente em instantes. Detalhe: "
+                        + (ultimoErro == null ? "" : ultimoErro.getMessage()), ultimoErro);
             }
             return extrairTextoResposta(resposta);
         } catch (JSONException e) {
@@ -357,6 +380,9 @@ public class GeminiAiService implements AiService {
             JSONObject parte = partes.optJSONObject(indice);
 
             if (parte != null) {
+                if (parte.optBoolean("thought", false)) {
+                    continue;
+                }
                 String trecho = parte.optString("text", "");
 
                 if (!trecho.isEmpty()) {
@@ -374,7 +400,6 @@ public class GeminiAiService implements AiService {
                     "O Gemini retornou uma resposta sem texto."
             );
         }
-
         return texto.toString();
     }
 
@@ -393,7 +418,6 @@ public class GeminiAiService implements AiService {
             }
 
         } catch (JSONException e) {
-            // A resposta não era um JSON de erro válido.
         }
 
         return corpoResposta;
