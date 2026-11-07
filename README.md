@@ -4,7 +4,7 @@ Aplicativo Android nativo para geração, validação e gestão de fichas de tre
 
 ---
 
-## 🛠️ Stack Tecnológica
+##  Stack Tecnológica
 
 * **Plataforma:** Android Nativo (Java 11 com *Core Library Desugaring*)
 * **SDK:** `minSdk 23` (Android 6.0 Marshmallow) | `compileSdk 37` | `targetSdk 37`
@@ -21,7 +21,7 @@ Aplicativo Android nativo para geração, validação e gestão de fichas de tre
 
 ---
 
-## 🏛️ Arquitetura do Sistema
+##  Arquitetura do Sistema
 
 O projeto adota uma arquitetura em camadas desacopladas (Domain, Service, Repository, UI):
 
@@ -47,7 +47,7 @@ app/src/main/java/com/meupersonal/
 
 ---
 
-## ⚙️ Funcionalidades Implementadas
+##  Funcionalidades Implementadas
 
 ### 1. Geração de Planilhas de Treino via IA
 * **Orquestração Inteligente (`TrainingGenerator`):** Submete a anamnese do usuário à API do Gemini utilizando prompts com diretrizes restritas de biomecânica e prevenção de lesões.
@@ -78,7 +78,7 @@ app/src/main/java/com/meupersonal/
 
 ---
 
-## 🔧 Configuração do Ambiente de Desenvolvimento
+##  Configuração do Ambiente de Desenvolvimento
 
 ### Pré-requisitos
 * Android Studio (versão Ladybug / Meerkat ou superior recomendada).
