@@ -40,6 +40,10 @@
         <TextView android:id="@+id/textDetalheDescricao" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginTop="16dp"
             android:lineSpacingExtra="4dp" android:textColor="#8B958C" android:textSize="14sp" />
+        <Button android:id="@+id/btnVoltarTreino" android:layout_width="match_parent"
+            android:layout_height="52dp" android:layout_marginTop="24dp"
+            android:text="Voltar ao treino" android:textAllCaps="false"
+            android:textColor="#B7F36B" android:backgroundTint="#202720" />
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="26dp" android:padding="14dp" android:background="#202720"
             android:text="Se sentir dor ou desconforto, pare. Adapte o movimento com orientação profissional."

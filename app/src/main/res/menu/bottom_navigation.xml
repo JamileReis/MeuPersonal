@@ -16,8 +16,5 @@
         android:icon="@drawable/ic_tune"
         android:title="Meu perfil" />
 
-        <item android:id="@id/navHome" android:icon="@drawable/ic_home" android:title="Início" />
-        <item android:id="@id/navPlans" android:icon="@drawable/ic_fitness" android:title="Planos" />
-        <item android:id="@id/navHistory" android:icon="@drawable/ic_tune" android:title="Histórico" />
 
 </menu>

@@ -63,6 +63,16 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
         return getWritableDatabase().insertOrThrow("plans", null, values);
     }
 
+    public PlanRecord getLatestPlan() {
+        try (Cursor c = getReadableDatabase().query("plans",
+                new String[]{"id", "title", "objective", "created_at", "plan_json"},
+                null, null, null, null, "created_at DESC", "1")) {
+            if (!c.moveToFirst()) return null;
+            return new PlanRecord(c.getLong(0), c.getString(1), c.getString(2),
+                    c.getLong(3), c.getString(4));
+        }
+    }
+
     public List<PlanRecord> listPlans() {
         List<PlanRecord> result = new ArrayList<>();
         try (Cursor c = getReadableDatabase().query("plans",

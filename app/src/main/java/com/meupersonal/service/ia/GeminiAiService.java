@@ -98,6 +98,13 @@ public class GeminiAiService implements AiService {
         return executar(prompt.toString(), true, 0.4);
     }
 
+    public String generateTrainingPlanFromPrompt(String prompt) throws IOException {
+        if (prompt == null || prompt.trim().length() < 30) {
+            throw new IllegalArgumentException("Informe os dados necessários para personalizar o treino.");
+        }
+        return executar(prompt, true, 0.35);
+    }
+
     @Override
     public String generateExerciseDescription(Exercise exercise)
             throws IOException {

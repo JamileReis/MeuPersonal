@@ -10,11 +10,15 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.meupersonal.presentation.login.LoginFragment"
-        android:label="Entrar" />
+        android:label="Entrar">
+        <action android:id="@+id/action_login_to_register" app:destination="@id/registerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.meupersonal.presentation.login.RegisterFragment"
-        android:label="Cadastrar" />
+        android:label="Cadastrar">
+        <action android:id="@+id/action_register_to_login" app:destination="@id/loginFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/dashboardFragment"

@@ -1,133 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_root" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="#101411">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#101411">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/mainScroll" android:layout_width="0dp"
-        android:layout_height="0dp" android:fillViewport="true"
-        android:clipToPadding="false" android:paddingBottom="16dp"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
-            android:paddingTop="24dp" android:paddingBottom="24dp">
-
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="MEU PERSONAL" android:textColor="#B7F36B"
-                android:textStyle="bold" android:textSize="12sp" android:letterSpacing="0.16" />
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" android:text="Seu treino. Seu ritmo."
-                android:textColor="#F4F5F2" android:textSize="29sp" android:textStyle="bold" />
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="7dp" android:text="Monte seu perfil e gere uma proposta diária personalizada com IA."
-                android:textColor="#A8B0A8" android:textSize="14sp" />
-
-            <Button android:id="@+id/btnStartWorkout" android:layout_width="match_parent"
-                android:layout_height="52dp" android:layout_marginTop="18dp"
-                android:text="Começar: preencher meu perfil" android:textAllCaps="false"
-                android:textColor="#101411" android:textStyle="bold" android:backgroundTint="#B7F36B" />
-
-            <LinearLayout android:id="@+id/profileFormRoot" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:layout_marginTop="20dp"
-                android:orientation="vertical" android:padding="16dp" android:background="#202720">
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="SEU PERFIL" android:textColor="#B7F36B" android:textStyle="bold"
-                    android:textSize="12sp" android:letterSpacing="0.12" />
-                <EditText android:id="@+id/inputName" android:layout_width="match_parent"
-                    android:layout_height="52dp" android:layout_marginTop="10dp"
-                    android:hint="Nome" android:inputType="textPersonName" android:singleLine="true"
-                    android:textColor="#F4F5F2" android:textColorHint="#8C958C" android:backgroundTint="#52604F" />
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <EditText android:id="@+id/inputAge" android:layout_width="0dp"
-                        android:layout_height="52dp" android:layout_weight="1" android:layout_marginEnd="8dp"
-                        android:hint="Idade" android:inputType="number" android:singleLine="true"
-                        android:textColor="#F4F5F2" android:textColorHint="#8C958C" android:backgroundTint="#52604F" />
-                    <EditText android:id="@+id/inputWeight" android:layout_width="0dp"
-                        android:layout_height="52dp" android:layout_weight="1" android:layout_marginStart="8dp"
-                        android:hint="Peso (kg)" android:inputType="numberDecimal" android:singleLine="true"
-                        android:textColor="#F4F5F2" android:textColorHint="#8C958C" android:backgroundTint="#52604F" />
-                </LinearLayout>
-                <EditText android:id="@+id/inputHeight" android:layout_width="match_parent"
-                    android:layout_height="52dp" android:hint="Altura (cm)" android:inputType="numberDecimal"
-                    android:singleLine="true" android:textColor="#F4F5F2" android:textColorHint="#8C958C"
-                    android:backgroundTint="#52604F" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" android:text="Objetivo" android:textColor="#C7CEC6" android:textSize="13sp" />
-                <Spinner android:id="@+id/spinnerObjective" android:layout_width="match_parent"
-                    android:layout_height="50dp" android:backgroundTint="#B7F36B" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp" android:text="Nível de experiência" android:textColor="#C7CEC6" android:textSize="13sp" />
-                <Spinner android:id="@+id/spinnerLevel" android:layout_width="match_parent"
-                    android:layout_height="50dp" android:backgroundTint="#B7F36B" />
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <EditText android:id="@+id/inputDays" android:layout_width="0dp"
-                        android:layout_height="52dp" android:layout_weight="1" android:layout_marginEnd="8dp"
-                        android:hint="Dias por semana" android:inputType="number" android:singleLine="true"
-                        android:text="4" android:textColor="#F4F5F2" android:textColorHint="#8C958C" android:backgroundTint="#52604F" />
-                    <EditText android:id="@+id/inputDuration" android:layout_width="0dp"
-                        android:layout_height="52dp" android:layout_weight="1" android:layout_marginStart="8dp"
-                        android:hint="Minutos/sessão" android:inputType="number" android:singleLine="true"
-                        android:text="45" android:textColor="#F4F5F2" android:textColorHint="#8C958C" android:backgroundTint="#52604F" />
-                </LinearLayout>
-                <EditText android:id="@+id/inputPreferences" android:layout_width="match_parent"
-                    android:layout_height="90dp" android:layout_marginTop="8dp" android:gravity="top|start"
-                    android:hint="Preferências: HIIT, musculação, equipamentos disponíveis…"
-                    android:inputType="textCapSentences|textMultiLine" android:textColor="#F4F5F2"
-                    android:textColorHint="#8C958C" android:backgroundTint="#52604F" />
-                <EditText android:id="@+id/inputRestrictions" android:layout_width="match_parent"
-                    android:layout_height="90dp" android:layout_marginTop="8dp" android:gravity="top|start"
-                    android:hint="Limitações, lesões ou movimentos a evitar"
-                    android:inputType="textCapSentences|textMultiLine" android:textColor="#F4F5F2"
-                    android:textColorHint="#8C958C" android:backgroundTint="#52604F" />
-                <Button android:id="@+id/buttonGeneratePlan" android:layout_width="match_parent"
-                    android:layout_height="54dp" android:layout_marginTop="14dp"
-                    android:text="Gerar treino do dia" android:textAllCaps="false"
-                    android:textColor="#101411" android:textStyle="bold" android:backgroundTint="#B7F36B" />
-                <ProgressBar android:id="@+id/progressGenerate" android:layout_width="42dp"
-                    android:layout_height="42dp" android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="12dp" android:indeterminateTint="#B7F36B"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <TextView android:id="@+id/textStatus" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:layout_marginTop="14dp"
-                android:textColor="#A8B0A8" android:textSize="13sp" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="14dp" android:orientation="vertical"
-                android:padding="16dp" android:background="#202720">
-                <TextView android:id="@+id/textPlanTitle" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:text="Seu treino aparecerá aqui"
-                    android:textColor="#F4F5F2" android:textSize="20sp" android:textStyle="bold" />
-                <TextView android:id="@+id/textPlanNotes" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:layout_marginTop="8dp"
-                    android:textColor="#A8B0A8" android:textSize="14sp" />
-                <Button android:id="@+id/buttonCopyPlan" android:layout_width="wrap_content"
-                    android:layout_height="48dp" android:layout_gravity="end"
-                    android:text="Copiar plano" android:textAllCaps="false"
-                    android:textColor="#B7F36B" android:backgroundTint="#303A30" />
-            </LinearLayout>
-            <com.google.android.material.tabs.TabLayout android:id="@+id/tabsWorkouts"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="14dp" android:background="#101411"
-                app:tabIndicatorColor="#B7F36B" app:tabSelectedTextColor="#B7F36B"
-                app:tabTextColor="#A8B0A8" />
-            <FrameLayout android:id="@+id/workoutContainer" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:layout_marginTop="8dp" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation" android:layout_width="0dp"
-        android:layout_height="wrap_content" android:background="#1A211B"
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#1A211B"
         app:menu="@menu/bottom_navigation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

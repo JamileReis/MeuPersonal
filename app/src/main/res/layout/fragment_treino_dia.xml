@@ -1,14 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="#101411" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="18dp" android:paddingBottom="12dp">
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TREINO DO DIA" android:textColor="#B7F36B" android:textStyle="bold" android:textSize="12sp" android:letterSpacing="0.15" />
-    <TextView android:id="@+id/textTituloTreino" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:layout_marginBottom="14dp" android:text="Seu treino personalizado" android:textColor="#F4F5F2" android:textSize="25sp" android:textStyle="bold" />
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" android:background="#202720">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SUGESTÃO PARA HOJE" android:textColor="#B7F36B" android:textSize="11sp" android:textStyle="bold" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Seu plano, do seu jeito" android:textColor="#F4F5F2" android:textSize="17sp" android:textStyle="bold" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="Sugestão baseada no objetivo, modalidade preferida e limitações informadas no perfil." android:textColor="#A8B0A8" android:textSize="13sp" />
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#101411"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Treino do dia"
+            android:textColor="#B7F36B"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textTituloTreino"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Seu treino personalizado"
+            android:textColor="#F4F5F2"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="12dp"
+            android:text="Exercícios de hoje · toque para ver detalhes"
+            android:textColor="#F4F5F2"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/containerExercicios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/btnAlterarTreinoIa"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:text="Quero alterar meu treino com IA"
+            android:textAllCaps="false"
+            android:textColor="#B7F36B"
+            android:backgroundTint="#202720" />
+
+        <Button
+            android:id="@+id/btnFinalizarTreino"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="Concluir treino"
+            android:textAllCaps="false"
+            android:textColor="#101411"
+            android:textStyle="bold"
+            android:backgroundTint="#B7F36B" />
+
     </LinearLayout>
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:layout_marginBottom="8dp" android:text="Exercícios de hoje · toque para ver detalhes" android:textColor="#F4F5F2" android:textSize="16sp" android:textStyle="bold" />
-    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerTreinoDia" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:paddingBottom="8dp" />
-    <Button android:id="@+id/btnAlterarTreinoIa" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginBottom="8dp" android:text="Quero alterar meu treino com IA" android:textAllCaps="false" android:textColor="#B7F36B" android:backgroundTint="#202720" />
-    <Button android:id="@+id/btnFinalizarTreino" android:layout_width="match_parent" android:layout_height="56dp" android:text="Concluir treino" android:textAllCaps="false" android:textColor="#101411" android:textStyle="bold" android:backgroundTint="#B7F36B" />
-</LinearLayout>
+</ScrollView>
