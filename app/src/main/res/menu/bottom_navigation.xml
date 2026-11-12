@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/dashboardFragment"
+        android:icon="@drawable/ic_home"
+        android:title="Início" />
+
+    <item
+        android:id="@+id/listaTreinosFragment"
+        android:icon="@drawable/ic_fitness"
+        android:title="Treinos" />
+
+    <item
+        android:id="@+id/especificacoesFragment"
+        android:icon="@drawable/ic_tune"
+        android:title="Meu perfil" />
+
+        <item android:id="@id/navHome" android:icon="@drawable/ic_home" android:title="Início" />
+        <item android:id="@id/navPlans" android:icon="@drawable/ic_fitness" android:title="Planos" />
+        <item android:id="@id/navHistory" android:icon="@drawable/ic_tune" android:title="Histórico" />
+
+</menu>

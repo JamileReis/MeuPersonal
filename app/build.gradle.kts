@@ -79,6 +79,8 @@ dependencies {
     implementation(libs.material)
 
     implementation("androidx.room:room-runtime:2.8.3")
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
     annotationProcessor("androidx.room:room-compiler:2.8.3")
 
     compileOnly("org.projectlombok:lombok:1.18.42")

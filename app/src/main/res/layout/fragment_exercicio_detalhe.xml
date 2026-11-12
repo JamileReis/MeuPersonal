@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#101411" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="22dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="DETALHE DO EXERCÍCIO" android:textColor="#B7F36B"
+            android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.12" />
+        <TextView android:id="@+id/textDetalheNome" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="10dp"
+            android:text="Exercício" android:textColor="#F4F5F2" android:textSize="27sp"
+            android:textStyle="bold" />
+        <TextView android:id="@+id/textDetalheGrupo" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="6dp"
+            android:text="Grupo muscular" android:textColor="#A8B0A8" android:textSize="14sp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" android:orientation="horizontal"
+            android:background="#202720" android:padding="14dp">
+            <TextView android:id="@+id/textDetalheSeries" android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="1" android:text="Séries" android:textColor="#F4F5F2" android:textStyle="bold" />
+            <TextView android:id="@+id/textDetalheReps" android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="1" android:text="Repetições" android:textColor="#F4F5F2" android:textStyle="bold" />
+            <TextView android:id="@+id/textDetalheDescanso" android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="1" android:text="Descanso" android:textColor="#F4F5F2" android:textStyle="bold" />
+        </LinearLayout>
+        <TextView android:id="@+id/textDetalheIntensidade" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="15dp"
+            android:textColor="#B7F36B" android:textSize="14sp" />
+        <TextView android:id="@+id/textDetalheCarga" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="6dp"
+            android:textColor="#A8B0A8" android:textSize="14sp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:text="Como executar"
+            android:textColor="#F4F5F2" android:textSize="18sp" android:textStyle="bold" />
+        <TextView android:id="@+id/textDetalheInstrucao" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="8dp"
+            android:lineSpacingExtra="5dp" android:text="Siga as instruções do seu plano."
+            android:textColor="#C7CEC6" android:textSize="15sp" />
+        <TextView android:id="@+id/textDetalheDescricao" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="16dp"
+            android:lineSpacingExtra="4dp" android:textColor="#8B958C" android:textSize="14sp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="26dp" android:padding="14dp" android:background="#202720"
+            android:text="Se sentir dor ou desconforto, pare. Adapte o movimento com orientação profissional."
+            android:textColor="#C7CEC6" android:textSize="13sp" />
+    </LinearLayout>
+</ScrollView>

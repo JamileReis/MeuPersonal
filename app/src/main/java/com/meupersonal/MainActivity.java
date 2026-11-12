@@ -5,11 +5,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +21,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.meupersonal.data.LocalWorkoutStore;
 import com.meupersonal.service.ia.GeminiAiService;
@@ -79,166 +76,86 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void construirInterface() {
-        ScrollView scroll = new ScrollView(this);
-        scroll.setFillViewport(true);
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(20), dp(18), dp(20), dp(28));
-        scroll.addView(root);
+        setContentView(R.layout.activity_main);
+        nomeInput = findViewById(R.id.inputName);
+        idadeInput = findViewById(R.id.inputAge);
+        pesoInput = findViewById(R.id.inputWeight);
+        alturaInput = findViewById(R.id.inputHeight);
+        preferenciasInput = findViewById(R.id.inputPreferences);
+        diasInput = findViewById(R.id.inputDays);
+        duracaoInput = findViewById(R.id.inputDuration);
+        restricoesInput = findViewById(R.id.inputRestrictions);
+        objetivoSpinner = findViewById(R.id.spinnerObjective);
+        nivelSpinner = findViewById(R.id.spinnerLevel);
+        resultadoTexto = findViewById(R.id.textPlanTitle);
+        observacoesTexto = findViewById(R.id.textPlanNotes);
+        statusTexto = findViewById(R.id.textStatus);
+        abasTreinos = findViewById(R.id.tabsWorkouts);
+        areaTreino = findViewById(R.id.workoutContainer);
+        gerarButton = findViewById(R.id.buttonGeneratePlan);
+        copiarButton = findViewById(R.id.buttonCopyPlan);
+        progresso = findViewById(R.id.progressGenerate);
 
-        TextView brand = new TextView(this);
-        brand.setText("MeuPersonal");
-        brand.setTextSize(30);
-        brand.setTypeface(null, Typeface.BOLD);
-        brand.setTextColor(0xFFC45431);
-        root.addView(brand);
-        TextView subtitle = new TextView(this);
-        subtitle.setText("Seu plano, suas sessões e seu progresso — salvos neste aparelho.");
-        subtitle.setTextSize(15);
-        subtitle.setPadding(0, dp(4), 0, dp(12));
-        root.addView(subtitle);
-
-        LinearLayout navigation = new LinearLayout(this);
-        navigation.setOrientation(LinearLayout.HORIZONTAL);
-        Button savedPlans = new Button(this);
-        savedPlans.setText("Meus planos");
-        Button history = new Button(this);
-        history.setText("Histórico");
-        navigation.addView(savedPlans, new LinearLayout.LayoutParams(0, dp(50), 1));
-        navigation.addView(history, new LinearLayout.LayoutParams(0, dp(50), 1));
-        root.addView(navigation);
-        savedPlans.setOnClickListener(v -> mostrarPlanosSalvos());
-        history.setOnClickListener(v -> mostrarHistorico());
-
-        adicionarRotulo(root, "Seu perfil (opcional)");
-        nomeInput = criarCampo("Nome", "", false);
-        root.addView(nomeInput);
-        LinearLayout medidas = new LinearLayout(this);
-        medidas.setOrientation(LinearLayout.HORIZONTAL);
-        idadeInput = criarCampo("Idade", "", true);
-        idadeInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        pesoInput = criarCampo("Peso kg", "", true);
-        alturaInput = criarCampo("Altura cm", "", true);
-        LinearLayout.LayoutParams medidaLp = new LinearLayout.LayoutParams(0,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-        medidas.addView(idadeInput, medidaLp);
-        medidas.addView(pesoInput, medidaLp);
-        medidas.addView(alturaInput, medidaLp);
-        root.addView(medidas);
-
-        adicionarRotulo(root, "Objetivo");
-        objetivoSpinner = criarSpinner(new String[]{"Hipertrofia", "Emagrecimento",
-                "Condicionamento físico", "Força", "Resistência muscular", "Saúde e bem-estar"});
-        root.addView(objetivoSpinner);
-        adicionarRotulo(root, "Nível de experiência");
-        nivelSpinner = criarSpinner(new String[]{"Iniciante", "Intermediário", "Avançado"});
-        root.addView(nivelSpinner);
-
-        adicionarRotulo(root, "Dias de treino por semana (1 a 7)");
-        diasInput = criarCampo("Ex.: 4", "4", true);
-        diasInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        root.addView(diasInput);
-        adicionarRotulo(root, "Duração de cada sessão em minutos");
-        duracaoInput = criarCampo("Ex.: 45", "45", true);
-        duracaoInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        root.addView(duracaoInput);
-        adicionarRotulo(root, "Preferências e comandos para a IA");
-        preferenciasInput = criarCampo("Ex.: prefiro halteres, evite corrida, sessões curtas", "", false);
-        preferenciasInput.setMinLines(2);
-        preferenciasInput.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);
-        root.addView(preferenciasInput);
-        adicionarRotulo(root, "Equipamentos, restrições ou limitações");
-        restricoesInput = criarCampo("Informe o que tem disponível e quaisquer limitações relevantes", "", false);
-        restricoesInput.setMinLines(3);
-        restricoesInput.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);
-        root.addView(restricoesInput);
-
-        gerarButton = new Button(this);
-        gerarButton.setText("Gerar e salvar plano");
-        LinearLayout.LayoutParams primaryLp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        primaryLp.topMargin = dp(18);
-        root.addView(gerarButton, primaryLp);
-        progresso = new ProgressBar(this);
-        progresso.setIndeterminate(true);
-        progresso.setVisibility(View.GONE);
-        root.addView(progresso);
-
-        TextView resultTitle = new TextView(this);
-        resultTitle.setText("Plano de treino");
-        resultTitle.setTextSize(21);
-        resultTitle.setTypeface(null, Typeface.BOLD);
-        resultTitle.setPadding(0, dp(22), 0, dp(5));
-        root.addView(resultTitle);
-        resultadoTexto = new TextView(this);
-        resultadoTexto.setText("Preencha os dados e toque em Gerar e salvar plano.");
-        resultadoTexto.setTextSize(18);
-        resultadoTexto.setTypeface(null, Typeface.BOLD);
-        resultadoTexto.setPadding(dp(12), dp(12), dp(12), dp(12));
-        resultadoTexto.setBackgroundColor(0xFFF3F1EC);
-        root.addView(resultadoTexto);
-        statusTexto = new TextView(this);
-        statusTexto.setTextSize(13);
-        statusTexto.setText(aiConfigError);
-        root.addView(statusTexto);
-        observacoesTexto = new TextView(this);
-        observacoesTexto.setTextSize(14);
-        observacoesTexto.setPadding(0, dp(6), 0, dp(8));
-        root.addView(observacoesTexto);
-
-        abasTreinos = new TabLayout(this);
-        abasTreinos.setTabMode(TabLayout.MODE_SCROLLABLE);
         abasTreinos.setVisibility(View.GONE);
-        abasTreinos.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override public void onTabSelected(TabLayout.Tab tab) { mostrarPagina(tab.getPosition()); }
-            @Override public void onTabUnselected(TabLayout.Tab tab) { }
-            @Override public void onTabReselected(TabLayout.Tab tab) { mostrarPagina(tab.getPosition()); }
-        });
-        root.addView(abasTreinos);
-        areaTreino = new FrameLayout(this);
-        root.addView(areaTreino, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        copiarButton = new Button(this);
-        copiarButton.setText("Copiar plano");
+        areaTreino.setVisibility(View.GONE);
         copiarButton.setEnabled(false);
-        root.addView(copiarButton);
 
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.navHome) {
+                ((androidx.core.widget.NestedScrollView) findViewById(R.id.mainScroll))
+                        .smoothScrollTo(0, 0);
+                return true;
+            } else if (id == R.id.navPlans) {
+                mostrarPlanosSalvos();
+                return true;
+            } else if (id == R.id.navHistory) {
+                mostrarHistorico();
+                return true;
+            }
+            return false;
+        });
+
+        configurarSpinner(objetivoSpinner, new String[]{
+                "Hipertrofia", "Emagrecimento", "Condicionamento físico",
+                "Força", "Resistência muscular", "Saúde e bem-estar"
+        });
+        configurarSpinner(nivelSpinner, new String[]{
+                "Iniciante", "Intermediário", "Avançado"
+        });
+
+        abasTreinos.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mostrarPagina(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                mostrarPagina(tab.getPosition());
+            }
+        });
+
+        findViewById(R.id.btnStartWorkout).setOnClickListener(v -> {
+            nomeInput.requestFocus();
+            ((androidx.core.widget.NestedScrollView) findViewById(R.id.mainScroll))
+                    .smoothScrollTo(0, findViewById(R.id.profileFormRoot).getTop());
+        });
         gerarButton.setOnClickListener(v -> gerarPlano());
         copiarButton.setOnClickListener(v -> copiarResultado());
-        setContentView(scroll);
+        statusTexto.setText(aiConfigError);
     }
 
-    private void adicionarRotulo(LinearLayout parent, String text) {
-        TextView label = new TextView(this);
-        label.setText(text);
-        label.setTextSize(15);
-        label.setTypeface(null, Typeface.BOLD);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = dp(12);
-        lp.bottomMargin = dp(4);
-        parent.addView(label, lp);
-    }
-
-    private EditText criarCampo(String hint, String initial, boolean numeric) {
-        EditText field = new EditText(this);
-        field.setHint(hint);
-        field.setText(initial);
-        field.setSingleLine(numeric);
-        field.setInputType(numeric ? InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL
-                : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        field.setPadding(dp(12), dp(9), dp(12), dp(9));
-        field.setContentDescription(hint);
-        return field;
-    }
-
-    private Spinner criarSpinner(String[] options) {
-        Spinner spinner = new Spinner(this);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, options);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    private void configurarSpinner(Spinner spinner, String[] options) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this, R.layout.item_spinner, options);
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spinner.setAdapter(adapter);
-        return spinner;
     }
 
     private void restaurarPerfil() {
@@ -402,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
             paginasTreino.add(criarPaginaTreino(day, i, planId));
         }
         abasTreinos.setVisibility(View.VISIBLE);
+        areaTreino.setVisibility(View.VISIBLE);
         if (abasTreinos.getTabCount() > 0) abasTreinos.selectTab(abasTreinos.getTabAt(0));
         mostrarPagina(0);
         for (int i = 0; i < paginasTreino.size(); i++) {
@@ -414,63 +332,81 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private LinearLayout criarPaginaTreino(JSONObject day, int index, long planId) {
-        LinearLayout page = new LinearLayout(this);
-        page.setOrientation(LinearLayout.VERTICAL);
-        page.setPadding(dp(8), dp(8), dp(8), dp(12));
-        TextView name = new TextView(this);
-        name.setText(day.optString("nome", day.optString("dia", "Treino")));
-        name.setTextSize(20);
-        name.setTypeface(null, Typeface.BOLD);
-        page.addView(name);
-        int duration = day.optInt("duracaoMinutos", 0);
-        if (duration > 0) addSmallText(page, "Duração estimada: " + duration + " min");
+        LinearLayout page = (LinearLayout) getLayoutInflater()
+                .inflate(R.layout.item_workout_day, areaTreino, false);
 
-        ImageView image = new ImageView(this);
-        image.setAdjustViewBounds(true);
-        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        image.setBackgroundColor(0xFFF3F1EC);
-        image.setContentDescription("Ilustração de referência para " + name.getText());
-        page.addView(image, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(205)));
-        TextView imageStatus = new TextView(this);
-        imageStatus.setText("A imagem de exemplo será carregada para esta sessão.");
-        page.addView(imageStatus);
-        Button retryImage = new Button(this);
-        retryImage.setText("Gerar imagem de exemplo");
-        page.addView(retryImage);
+        TextView name = page.findViewById(R.id.textWorkoutName);
+        TextView durationLabel = page.findViewById(R.id.textWorkoutDuration);
+        ImageView image = page.findViewById(R.id.imageWorkoutReference);
+        TextView imageStatus = page.findViewById(R.id.textImageStatus);
+        Button retryImage = page.findViewById(R.id.btnGenerateImage);
+        LinearLayout exerciseList = page.findViewById(R.id.exerciseList);
+        TextView sessionStatus = page.findViewById(R.id.textSessionStatus);
+        Button sessionButton = page.findViewById(R.id.btnWorkoutSession);
+
+        String workoutName = day.optString("nome", day.optString("dia", "Treino"));
+        name.setText(workoutName);
+        int duration = day.optInt("duracaoMinutos", 0);
+        if (duration > 0) {
+            durationLabel.setText("DURAÇÃO ESTIMADA  ·  " + duration + " MIN");
+        } else {
+            durationLabel.setVisibility(View.GONE);
+        }
 
         JSONArray exercises = day.optJSONArray("exercicios");
         StringBuilder names = new StringBuilder();
-        if (exercises != null) for (int i = 0; i < exercises.length(); i++) {
-            JSONObject exercise = exercises.optJSONObject(i);
-            if (exercise == null) continue;
-            String exerciseName = exercise.optString("nome", "Exercício");
-            if (names.length() > 0) names.append(", ");
-            names.append(exerciseName);
-            TextView card = new TextView(this);
-            StringBuilder details = new StringBuilder("●  ").append(exerciseName);
-            String muscle = exercise.optString("grupoMuscular", "");
-            String equipment = exercise.optString("equipamento", "");
-            int sets = exercise.optInt("series", 0);
-            String reps = exercise.optString("repeticoes", "");
-            int rest = exercise.optInt("descansoSegundos", 0);
-            if (!muscle.isEmpty()) details.append("\nGrupo: ").append(muscle);
-            if (!equipment.isEmpty()) details.append("\nEquipamento: ").append(equipment);
-            if (sets > 0 || !reps.isEmpty()) details.append("\nSéries/repetições: ").append(sets).append(" × ").append(reps);
-            if (rest > 0) details.append("\nDescanso: ").append(rest).append(" s");
-            String instruction = exercise.optString("instrucao", "");
-            if (!instruction.isEmpty()) details.append("\nExecução: ").append(instruction);
-            card.setText(details.toString());
-            card.setTextSize(15);
-            card.setPadding(dp(12), dp(12), dp(12), dp(12));
-            card.setBackgroundColor(0xFFF5F2ED);
-            LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            cardLp.topMargin = dp(8);
-            page.addView(card, cardLp);
+        if (exercises != null) {
+            for (int i = 0; i < exercises.length(); i++) {
+                JSONObject exercise = exercises.optJSONObject(i);
+                if (exercise == null) continue;
+
+                String exerciseName = exercise.optString("nome", "Exercício");
+                if (names.length() > 0) names.append(", ");
+                names.append(exerciseName);
+
+                View exerciseCard = getLayoutInflater().inflate(
+                        R.layout.item_exercise, exerciseList, false);
+                TextView title = exerciseCard.findViewById(R.id.textExerciseName);
+                TextView metrics = exerciseCard.findViewById(R.id.textExerciseMetrics);
+                TextView details = exerciseCard.findViewById(R.id.textExerciseDetails);
+
+                title.setText(String.format(Locale.getDefault(), "%02d  %s", i + 1, exerciseName));
+                int sets = exercise.optInt("series", 0);
+                String reps = exercise.optString("repeticoes", "");
+                int rest = exercise.optInt("descansoSegundos", 0);
+                StringBuilder metricText = new StringBuilder();
+                if (sets > 0 || !reps.isEmpty()) {
+                    metricText.append(sets).append(" séries  ·  ").append(reps).append(" repetições");
+                }
+                if (rest > 0) {
+                    if (metricText.length() > 0) metricText.append("  ·  ");
+                    metricText.append(rest).append(" s descanso");
+                }
+                metrics.setText(metricText.toString());
+                metrics.setVisibility(metricText.length() == 0 ? View.GONE : View.VISIBLE);
+
+                StringBuilder detailText = new StringBuilder();
+                String muscle = exercise.optString("grupoMuscular", "");
+                String equipment = exercise.optString("equipamento", "");
+                String instruction = exercise.optString("instrucao", "");
+                if (!muscle.isEmpty()) detailText.append("Grupo muscular: ").append(muscle);
+                if (!equipment.isEmpty()) {
+                    if (detailText.length() > 0) detailText.append("\n");
+                    detailText.append("Equipamento: ").append(equipment);
+                }
+                if (!instruction.isEmpty()) {
+                    if (detailText.length() > 0) detailText.append("\n");
+                    detailText.append(instruction);
+                }
+                details.setText(detailText.toString());
+                details.setVisibility(detailText.length() == 0 ? View.GONE : View.VISIBLE);
+                exerciseList.addView(exerciseCard);
+            }
         }
 
         final int dayIndex = index;
-        Runnable generateImage = () -> solicitarImagem(planId, dayIndex, day, names.toString(), image, imageStatus, retryImage);
+        Runnable generateImage = () -> solicitarImagem(
+                planId, dayIndex, day, names.toString(), image, imageStatus, retryImage);
         retryImage.setOnClickListener(v -> {
             imagensSolicitadas.remove(chaveImagem(planId, dayIndex));
             store.deleteImage(planId, dayIndex);
@@ -481,28 +417,30 @@ public class MainActivity extends AppCompatActivity {
 
         long openSession = store.getOpenSession(planId, dayIndex);
         final long[] sessionId = {openSession};
-        Button sessionButton = new Button(this);
-        sessionButton.setText(openSession >= 0 ? "Finalizar sessão" : "Iniciar sessão");
-        LinearLayout.LayoutParams sessionLp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        sessionLp.topMargin = dp(14);
-        page.addView(sessionButton, sessionLp);
+        if (openSession >= 0) {
+            sessionButton.setText("Finalizar sessão");
+            sessionStatus.setText("Você tem uma sessão em andamento.");
+        }
         sessionButton.setOnClickListener(v -> {
-            String sessionTitle = day.optString("nome", day.optString("dia", "Treino"));
             if (sessionId[0] < 0) {
-                sessionId[0] = store.startSession(planId, dayIndex, sessionTitle, System.currentTimeMillis());
+                sessionId[0] = store.startSession(
+                        planId, dayIndex, workoutName, System.currentTimeMillis());
                 sessionButton.setText("Finalizar sessão");
-                addSmallText(page, "Sessão iniciada às " + DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date()));
+                sessionStatus.setText("Sessão iniciada às "
+                        + DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date()));
                 Toast.makeText(this, "Treino iniciado. Bom treino!", Toast.LENGTH_SHORT).show();
             } else {
-                new AlertDialog.Builder(this).setTitle("Finalizar treino?")
+                new AlertDialog.Builder(this)
+                        .setTitle("Finalizar treino?")
                         .setMessage("Deseja registrar esta sessão como concluída?")
                         .setNegativeButton("Continuar", null)
                         .setPositiveButton("Concluir", (dialog, which) -> {
                             store.finishSession(sessionId[0], System.currentTimeMillis());
                             sessionId[0] = -1L;
                             sessionButton.setText("Treino concluído · iniciar novamente");
-                            sessionButton.setOnClickListener(x -> iniciarNovaSessao(planId, dayIndex, sessionTitle, sessionButton));
+                            sessionStatus.setText("Sessão concluída e registrada no histórico.");
+                            sessionButton.setOnClickListener(
+                                    x -> iniciarNovaSessao(planId, dayIndex, workoutName, sessionButton));
                             Toast.makeText(this, "Treino registrado no histórico.", Toast.LENGTH_SHORT).show();
                         }).show();
             }
@@ -526,13 +464,6 @@ public class MainActivity extends AppCompatActivity {
 
     private String chaveImagem(long planId, int dayIndex) {
         return planId + ":" + dayIndex;
-    }
-
-    private void addSmallText(LinearLayout parent, String text) {
-        TextView view = new TextView(this);
-        view.setText(text);
-        view.setTextSize(14);
-        parent.addView(view);
     }
 
     private void mostrarPagina(int position) {
@@ -637,6 +568,7 @@ public class MainActivity extends AppCompatActivity {
                             currentPlanId = -1L;
                             resultadoCompleto = "";
                             abasTreinos.setVisibility(View.GONE);
+                            areaTreino.setVisibility(View.GONE);
                             abasTreinos.removeAllTabs();
                             paginasTreino.clear();
                             areaTreino.removeAllViews();
