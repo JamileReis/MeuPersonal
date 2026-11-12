@@ -4,8 +4,20 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
-    <action android:id="@+id/action_global_login" app:destination="@id/loginFragment" app:popUpTo="@id/nav_graph" app:popUpToInclusive="true" />
-    <action android:id="@+id/action_global_dashboard" app:destination="@id/dashboardFragment" app:popUpTo="@id/loginFragment" app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/action_global_login"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/action_lista_to_prompt"
+        app:destination="@id/promptTreinoFragment" />
+
+    <action
+        android:id="@+id/action_global_dashboard"
+        app:destination="@id/dashboardFragment"
+        app:popUpTo="@id/loginFragment"
+        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/loginFragment"
@@ -13,6 +25,7 @@
         android:label="Entrar">
         <action android:id="@+id/action_login_to_register" app:destination="@id/registerFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.meupersonal.presentation.login.RegisterFragment"
@@ -31,6 +44,7 @@
         android:id="@+id/listaTreinosFragment"
         android:name="com.meupersonal.presentation.treino.ListaTreinosFragment"
         android:label="Treinos">
+        <action android:id="@+id/action_lista_to_prompt" app:destination="@id/promptTreinoFragment" />
         <action android:id="@+id/action_lista_to_treino_dia" app:destination="@id/treinoDiaFragment" />
     </fragment>
 
@@ -38,7 +52,11 @@
         android:id="@+id/especificacoesFragment"
         android:name="com.meupersonal.presentation.especificacoes.EspecificacoesFragment"
         android:label="Meu perfil">
-        <action android:id="@+id/action_perfil_to_dashboard" app:destination="@id/dashboardFragment" app:popUpTo="@id/loginFragment" app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_perfil_to_dashboard"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -48,13 +66,15 @@
         <action android:id="@+id/action_treino_to_prompt" app:destination="@id/promptTreinoFragment" />
         <action android:id="@+id/action_treino_to_exercicio" app:destination="@id/exercicioDetalheFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/exercicioDetalheFragment"
         android:name="com.meupersonal.presentation.treino.ExercicioDetalheFragment"
         android:label="Exercício" />
+
     <fragment
         android:id="@+id/promptTreinoFragment"
         android:name="com.meupersonal.presentation.treino.PromptTreinoFragment"
-        android:label="Alterar treino" />
+        android:label="Personalizar treino" />
 
 </navigation>

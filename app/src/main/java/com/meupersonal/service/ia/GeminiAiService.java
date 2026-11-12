@@ -17,10 +17,12 @@ import java.nio.charset.StandardCharsets;
 
 public class GeminiAiService implements AiService {
     public static final String API_KEY = BuildConfig.GEMINI_API_KEY;
+
     private static final String BASE =
             "https://generativelanguage.googleapis.com/v1beta/models/";
 
-    private static final String API_URL = BASE + "gemini-3.8-flash:generateContent";
+    private static final String API_URL =
+            BASE + "gemini-3.8-flash:generateContent";
 
     private static final String[] FALLBACK_URLS = {
             BASE + "gemini-3.7-flash:generateContent",
@@ -28,14 +30,16 @@ public class GeminiAiService implements AiService {
             BASE + "gemini-3.5-flash-lite:generateContent"
     };
 
-    private static final String IMAGE_API_URL = BASE + "gemini-2.5-flash-image:generateContent";
+    private static final String IMAGE_API_URL =
+            BASE + "gemini-3.1-flash-image:generateContent";
 
     private static final int MAX_TENTATIVAS = 3;
+
     private static final String SYSTEM_PROMPT =
-            "Você é o assistente de treino do MeuPersonal. "
-                    + "Responda sempre em português do Brasil. "
-                    + "Não invente dados pessoais, objetivos, lesões "
-                    + "ou limitações. Priorize a segurança dos exercícios.";
+            "Você é o assistente de treino do MeuPersonal. " +
+                    "Responda sempre em português do Brasil. " +
+                    "Não invente dados pessoais, objetivos, lesões " +
+                    "ou limitações. Priorize a segurança dos exercícios.";
 
     private static final int TEMPO_CONEXAO_MS = 20_000;
     private static final int TEMPO_RESPOSTA_MS = 90_000;

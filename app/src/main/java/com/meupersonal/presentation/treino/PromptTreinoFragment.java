@@ -94,26 +94,92 @@ public void onViewCreated(@NonNull View view, @Nullable Bundle state) {
     });
 }
 
-private String buildPrompt(String objective, int days, int minutes, String level,
-                           String equipment, String restrictions, String preferences) {
-    return "Crie um plano de musculação individualizado para o aplicativo MeuPersonal. "
-            + "Responda exclusivamente com JSON válido, sem markdown. "
-            + "Use exatamente esta estrutura: {\"titulo\":\"\",\"objetivo\":\"\","
-            + "\"observacoes\":\"\",\"dias\":[{\"dia\":\"Segunda-feira\","
-            + "\"nome\":\"Treino A\",\"duracaoMinutos\":" + minutes
-            + ",\"descricao\":\"\",\"exercicios\":[{\"nome\":\"\","
-            + "\"grupoMuscular\":\"\",\"series\":3,\"repeticoes\":12,"
-            + "\"descansoSegundos\":60,\"intensidade\":\"\",\"carga\":null,"
-            + "\"instrucao\":\"\",\"descricao\":\"\"}]}]}. "
-            + "Gere " + days + " sessões distintas, cada uma com 4 a 8 exercícios. "
-            + "Objetivo: " + objective + ". Nível: " + fallback(level, "não informado")
-            + ". Equipamentos: " + fallback(equipment, "não informado")
-            + ". Limitações, lesões ou dores: " + fallback(restrictions, "não informadas")
-            + ". Preferências: " + fallback(preferences, "não informadas")
-            + ". Respeite rigorosamente as limitações, não prescreva movimentos que as agravem, "
-            + "não invente dados de saúde e inclua observações de segurança. "
-            + "Séries, repetições e descanso devem ser números positivos.";
-}
+
+    private String buildPrompt(
+            String objective,
+            int days,
+            int minutes,
+            String level,
+            String equipment,
+            String restrictions,
+            String preferences
+    ) {
+        return "Você é um personal trainer virtual do aplicativo MeuPersonal. "
+                + "Sua função é executar as decisões de treinamento do usuário e "
+                + "transformá-las em um plano personalizado.\n\n"
+
+                + "DADOS DO TREINAMENTO:\n"
+                + "- Objetivo: " + objective + "\n"
+                + "- Dias por semana: " + days + "\n"
+                + "- Duração por sessão: " + minutes + " minutos\n"
+                + "- Nível: " + fallback(level, "Não informado") + "\n"
+                + "- Equipamentos: " + fallback(equipment, "Não informado") + "\n"
+                + "- Limitações: " + fallback(restrictions, "Nenhuma informada") + "\n\n"
+
+                + "COMANDOS E DECISÕES DO USUÁRIO:\n"
+                + (preferences.isEmpty()
+                ? "Nenhum comando adicional informado.\n"
+                : preferences + "\n")
+
+                + "\nREGRAS OBRIGATÓRIAS:\n"
+                + "1. O usuário tem liberdade para decidir como deseja treinar.\n"
+                + "2. Trate os comandos escritos como instruções a serem executadas, "
+                + "não como sugestões.\n"
+                + "3. Respeite a divisão muscular solicitada pelo usuário.\n"
+                + "4. Respeite os exercícios escolhidos e os exercícios que ele "
+                + "não deseja realizar.\n"
+                + "5. Permita combinar musculação, aeróbico, mobilidade e "
+                + "condicionamento físico.\n"
+                + "6. Não imponha divisões ABC, ABCD ou ABCDE se o usuário "
+                + "solicitar outra organização.\n"
+                + "7. Não substitua decisões do usuário por preferências próprias.\n"
+                + "8. Interprete linguagem natural, comandos informais e textos "
+                + "com erros gramaticais.\n"
+                + "9. Combine os comandos com os dados do formulário.\n"
+                + "10. Não ignore instruções específicas.\n"
+                + "11. Se duas instruções forem incompatíveis, explique o conflito "
+                + "em observacoes.\n"
+                + "12. Se uma solicitação apresentar risco físico, explique o "
+                + "motivo e proponha uma alternativa segura.\n"
+                + "13. Nunca invente informações sobre a saúde do usuário.\n"
+                + "14. Respeite os equipamentos disponíveis e as limitações informadas.\n\n"
+
+                + "FORMATO DE RESPOSTA:\n"
+                + "Responda exclusivamente com JSON válido, sem Markdown ou "
+                + "qualquer texto fora do JSON.\n"
+                + "Use exatamente esta estrutura:\n"
+                + "{"
+                + "\"titulo\":\"\","
+                + "\"objetivo\":\"\","
+                + "\"observacoes\":\"\","
+                + "\"dias\":[{"
+                + "\"dia\":\"Segunda-feira\","
+                + "\"nome\":\"Treino A\","
+                + "\"duracaoMinutos\":" + minutes + ","
+                + "\"descricao\":\"\","
+                + "\"exercicios\":[{"
+                + "\"nome\":\"\","
+                + "\"grupoMuscular\":\"\","
+                + "\"series\":3,"
+                + "\"repeticoes\":12,"
+                + "\"descansoSegundos\":60,"
+                + "\"intensidade\":\"\","
+                + "\"carga\":null,"
+                + "\"instrucao\":\"\","
+                + "\"descricao\":\"\""
+                + "}]"
+                + "}]}"
+
+                + "\n\nREQUISITOS FINAIS:\n"
+                + "- Gere exatamente " + days + " sessões.\n"
+                + "- Cada sessão deve conter de 4 a 8 exercícios.\n"
+                + "- Respeite a duração de " + minutes + " minutos por sessão.\n"
+                + "- Execute todas as instruções compatíveis e seguras do usuário.\n"
+                + "- Utilize números positivos para séries, repetições e descanso.\n"
+                + "- Utilize null quando a carga não puder ser determinada.\n"
+                + "- Retorne todos os campos exigidos no JSON.\n"
+                + "- Garanta que o JSON possa ser interpretado pelo Android.";
+    }
 
 private String value(EditText input) {
     return input.getText() == null ? "" : input.getText().toString().trim();

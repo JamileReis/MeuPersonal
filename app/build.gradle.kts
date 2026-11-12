@@ -1,5 +1,6 @@
 import java.util.Properties
 
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -51,6 +52,7 @@ android {
             "\"${geminiApiKey.replace("\"", "\\\"")}\""
         )
     }
+
 
     buildFeatures {
         buildConfig = true
