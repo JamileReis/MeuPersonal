@@ -5,6 +5,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.TextView;
+
+import androidx.navigation.fragment.NavHostFragment;
+
+import com.meupersonal.data.auth.SecureSessionStore;
+import com.meupersonal.model.auth.AuthSession;
+import com.meupersonal.presentation.auth.AuthViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +53,20 @@ public final class PerfilFragment extends Fragment {
         preferencias = view.findViewById(R.id.inputPreferencias);
 
         Button salvar = view.findViewById(R.id.btnSalvarPerfil);
+        Button sair = view.findViewById(R.id.btnSairConta);
+        TextView emailConta = view.findViewById(R.id.textEmailConta);
+
+        AuthSession session = new SecureSessionStore(requireContext()).read();
+        emailConta.setText(session == null || session.getEmail() == null
+                ? "Conta não identificada" : session.getEmail());
+
+        AuthViewModel authViewModel = new ViewModelProvider(requireActivity())
+                .get(AuthViewModel.class);
+        sair.setOnClickListener(v -> {
+            sair.setEnabled(false);
+            authViewModel.logout();
+            NavHostFragment.findNavController(this).navigate(R.id.action_global_login);
+        });
 
         viewModel.getPerfil().observe(getViewLifecycleOwner(), perfil -> {
             if (perfil == null) return;

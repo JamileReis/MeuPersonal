@@ -78,6 +78,23 @@
             android:gravity="top"
             android:minLines="3" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="CONTA"
+            android:textColor="#B2F45B"
+            android:textStyle="bold"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/textEmailConta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#F2F4F1"
+            android:textSize="15sp" />
+
         <Button
             android:id="@+id/btnSalvarPerfil"
             android:layout_width="match_parent"
@@ -87,6 +104,15 @@
             android:text="SALVAR PERFIL"
             android:textColor="#111612"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnSairConta"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#343D35"
+            android:text="SAIR DA CONTA"
+            android:textColor="#F2F4F1" />
 
     </LinearLayout>
 </ScrollView>

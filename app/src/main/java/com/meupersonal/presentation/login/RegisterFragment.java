@@ -49,7 +49,7 @@ public final class RegisterFragment extends Fragment {
             viewModel.clearAuthState();
             if (state.getType() == AuthUiState.Type.SUCCESS) {
                 Toast.makeText(requireContext(), state.getMessage(), Toast.LENGTH_LONG).show();
-                NavHostFragment.findNavController(this).navigate(R.id.action_global_dashboard);
+                NavHostFragment.findNavController(this).navigate(R.id.especificacoesFragment);
             } else if (state.getType() == AuthUiState.Type.EMAIL_CONFIRMATION) {
                 Toast.makeText(requireContext(), state.getMessage(), Toast.LENGTH_LONG).show();
                 NavHostFragment.findNavController(this).navigate(R.id.action_register_to_login);

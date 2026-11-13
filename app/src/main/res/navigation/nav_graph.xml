@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/especificacoesFragment"
-        android:name="com.meupersonal.presentation.especificacoes.EspecificacoesFragment"
+        android:name="com.meupersonal.presentation.perfil.PerfilFragment"
         android:label="Meu perfil">
         <action
             android:id="@+id/action_perfil_to_dashboard"

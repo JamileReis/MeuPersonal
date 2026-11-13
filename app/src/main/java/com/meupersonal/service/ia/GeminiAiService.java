@@ -42,8 +42,8 @@ public class GeminiAiService implements AiService {
                     "ou limitações. Priorize a segurança dos exercícios.";
 
     private static final int TEMPO_CONEXAO_MS = 20_000;
-    private static final int TEMPO_RESPOSTA_MS = 90_000;
-    private static final int MAX_TOKENS = 32768;
+    private static final int TEMPO_RESPOSTA_MS = 180_000;
+    private static final int MAX_TOKENS = 12288;
 
     private final String chaveApi;
 
@@ -255,8 +255,7 @@ public class GeminiAiService implements AiService {
                     ultimoErro = e;
                     String m = e.getMessage() == null ? "" : e.getMessage();
                     boolean tentarProximo = m.contains("HTTP 503")
-                            || m.contains("HTTP 404")
-                            || m.contains("HTTP 429");
+                            || m.contains("HTTP 404");
                     if (!tentarProximo) throw e;
                 }
             }
@@ -296,15 +295,17 @@ public class GeminiAiService implements AiService {
                         + "): " + extrairMensagemErro(resposta)
                         + ((status == 429 || status >= 500)
                         ? " (tentativa " + tentativa + " de " + MAX_TENTATIVAS + ")" : ""));
-                if (!(status == 429 || status >= 500) || tentativa == MAX_TENTATIVAS) {
-                    throw erro;
+                if (status == 429) {
+                    throw new IOException("Limite de uso da API Gemini atingido (HTTP 429). "
+                            + "Aumentar tokens não aumenta a cota gratuita. Aguarde a renovação "
+                            + "do limite ou verifique o plano e a cota do projeto.", erro);
                 }
+                if (status < 500 || tentativa == MAX_TENTATIVAS) throw erro;
                 ultimoErro = erro;
             } catch (IOException e) {
                 String mensagem = e.getMessage();
                 if (conexao == null || tentativa == MAX_TENTATIVAS || mensagem == null
-                        || !mensagem.contains("HTTP 429")
-                        && !mensagem.contains("HTTP 5")) throw e;
+                        || !mensagem.contains("HTTP 5")) throw e;
                 ultimoErro = e;
             } finally {
                 if (conexao != null) conexao.disconnect();

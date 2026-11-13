@@ -27,13 +27,13 @@ public class WorkoutRepository {
         return workoutDao.findByUsuarioId(usuarioId);
     }
 
-    public void save(Workout treino) {
+    public long save(Workout workout) {
         Objects.requireNonNull(
-                treino,
+                workout,
                 "O treino não pode ser nulo."
         );
 
-        workoutDao.save(treino);
+        return workoutDao.save(workout);
     }
 
     public void delete(Long id) {

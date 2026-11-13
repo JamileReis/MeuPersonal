@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PERSONALIZE SEU TREINO"
+            android:text="Personalize seu treino"
             android:textColor="#B7F36B"
             android:textStyle="bold"
             android:textSize="12sp" />
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:hint="Lesões, dores ou limitações (se houver)"
+            android:hint="Condição de hoje (opcional): dor, desconforto ou cansaço"
             android:minLines="2"
             android:gravity="top"
             android:inputType="textMultiLine" />

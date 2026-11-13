@@ -6,13 +6,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import com.meupersonal.R;
-import com.meupersonal.data.LocalWorkoutStore;
-import com.meupersonal.data.auth.SecureSessionStore;
-import com.meupersonal.model.auth.AuthSession;
+import com.meupersonal.presentation.dashboard.DashboardViewModel;
 
 public final class DashboardFragment extends Fragment {
+    private TextView progress;
+    private TextView greeting;
+    private TextView planTitle;
+    private TextView planDescription;
+    private DashboardViewModel viewModel;
+
     public DashboardFragment() {
         super(R.layout.fragment_dashboard);
     }
@@ -24,30 +29,29 @@ public final class DashboardFragment extends Fragment {
     ) {
         super.onViewCreated(view, state);
 
-        TextView greeting = view.findViewById(R.id.textSaudacao);
-        TextView progress = view.findViewById(R.id.textProgresso);
+        greeting = view.findViewById(R.id.textSaudacao);
+        progress = view.findViewById(R.id.textConsistencia);
+        planTitle = view.findViewById(R.id.textTituloPlano);
+        planDescription = view.findViewById(R.id.textDescricaoPlano);
         View workoutCard = view.findViewById(R.id.cardAcessoTreinoDia);
 
-        AuthSession session = new SecureSessionStore(requireContext()).read();
+        viewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        viewModel.getState().observe(getViewLifecycleOwner(), dashboardState -> {
+            if (dashboardState == null) return;
 
-        if (session != null) {
-            String email = session.getEmail();
+            String nome = dashboardState.nome == null || dashboardState.nome.trim().isEmpty()
+                    ? "Vamos treinar?"
+                    : dashboardState.nome.trim().split(" ")[0];
 
-            if (email != null && !email.isEmpty()) {
-                String firstName = email.split("@")[0].split("[._-]")[0];
-                greeting.setText("Olá, " + firstName + "!");
-            }
-        }
+            greeting.setText("Olá, " + nome);
+            planTitle.setText(dashboardState.tituloPlano);
+            planDescription.setText(dashboardState.descricaoPlano);
 
-        LocalWorkoutStore store = new LocalWorkoutStore(requireContext());
-
-        int completed = store.countCompletedSessionsLastDays(7);
-
-        progress.setText(
-                completed + (completed == 1
-                        ? " treino concluído nos últimos 7 dias"
-                        : " treinos concluídos nos últimos 7 dias")
-        );
+            progress.setText(
+                    dashboardState.treinosConcluidos
+                            + " treinos concluídos nos últimos 7 dias"
+            );
+        });
 
         workoutCard.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
@@ -58,21 +62,15 @@ public final class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (viewModel != null) viewModel.carregarDashboard();
+    }
 
-        View view = getView();
-
-        if (view != null) {
-            TextView progress = view.findViewById(R.id.textProgresso);
-
-            try (LocalWorkoutStore store = new LocalWorkoutStore(requireContext())) {
-                int completed = store.countCompletedSessionsLastDays(7);
-
-                progress.setText(
-                        completed + (completed == 1
-                                ? " treino concluído nos últimos 7 dias"
-                                : " treinos concluídos nos últimos 7 dias")
-                );
-            }
-        }
+    @Override
+    public void onDestroyView() {
+        progress = null;
+        greeting = null;
+        planTitle = null;
+        planDescription = null;
+        super.onDestroyView();
     }
 }

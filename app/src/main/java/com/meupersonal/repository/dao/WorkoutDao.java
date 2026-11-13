@@ -13,24 +13,24 @@ import java.util.List;
 public interface WorkoutDao {
 
     @Query(
-            "SELECT * FROM treinos " +
-                    "WHERE workoutPlanId IN (" +
-                    "SELECT id FROM planos_treino WHERE userID = :usuarioId" +
-                    ")"
+            "SELECT treinos.* FROM treinos " +
+                    "INNER JOIN planos_treino " +
+                    "ON treinos.workoutPlanId = planos_treino.id " +
+                    "WHERE planos_treino.userID = :usuarioId"
     )
     List<Workout> findByUsuarioId(Long usuarioId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long save(Workout treino);
+    long save(Workout workout);
 
     @Query("DELETE FROM treinos WHERE id = :id")
     void delete(Long id);
 
     @Query(
-            "SELECT * FROM treinos " +
-                    "WHERE workoutPlanId IN (" +
-                    "SELECT id FROM planos_treino WHERE status = 'ATIVO'" +
-                    ")"
+            "SELECT treinos.* FROM treinos " +
+                    "INNER JOIN planos_treino " +
+                    "ON treinos.workoutPlanId = planos_treino.id " +
+                    "WHERE planos_treino.status = 'ATIVO'"
     )
     List<Workout> findActive();
 }

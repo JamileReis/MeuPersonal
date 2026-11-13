@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MEU PERSONAL / HOJE"
+            android:text="Meu personal com treino do dia"
             android:textColor="#B2F45B"
             android:textStyle="bold"
             android:letterSpacing="0.12"
