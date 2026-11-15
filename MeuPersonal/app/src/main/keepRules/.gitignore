@@ -1,0 +1,36 @@
+# Configurações locais do Android Studio e Gradle
+local.properties
+.gradle/
+.idea/
+*.iml
+
+# Build
+build/
+app/build/
+
+# Configurações e credenciais
+.env
+.env.*
+secrets.properties
+app/secrets.properties
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.swp
+
+# Android
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Chaves e certificados
+*.jks
+*.keystore

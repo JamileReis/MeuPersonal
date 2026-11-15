@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#101411" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="26dp" android:paddingTop="56dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="MEU PERSONAL / SEGURANÇA" android:textColor="#B7F36B"
+            android:textStyle="bold" android:textSize="13sp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:text="Crie uma nova senha"
+            android:textColor="#F4F5F2" android:textSize="28sp" android:textStyle="bold" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" android:layout_marginBottom="24dp"
+            android:text="Escolha uma senha com pelo menos 8 caracteres."
+            android:textColor="#A8B0A8" android:textSize="15sp" />
+        <EditText android:id="@+id/inputNovaSenha" android:layout_width="match_parent"
+            android:layout_height="56dp" android:hint="Nova senha" android:inputType="textPassword"
+            android:paddingHorizontal="16dp" android:textColor="#F4F5F2"
+            android:textColorHint="#8C958C" android:backgroundTint="#3A443B" />
+        <EditText android:id="@+id/inputConfirmarNovaSenha" android:layout_width="match_parent"
+            android:layout_height="56dp" android:layout_marginTop="12dp"
+            android:hint="Confirme a nova senha" android:inputType="textPassword"
+            android:paddingHorizontal="16dp" android:textColor="#F4F5F2"
+            android:textColorHint="#8C958C" android:backgroundTint="#3A443B" />
+        <Button android:id="@+id/btnSalvarNovaSenha" android:layout_width="match_parent"
+            android:layout_height="56dp" android:layout_marginTop="20dp"
+            android:text="Salvar nova senha" android:textAllCaps="false"
+            android:textColor="#101411" android:textStyle="bold" android:backgroundTint="#B7F36B" />
+        <ProgressBar android:id="@+id/progressNovaSenha" android:layout_width="40dp"
+            android:layout_height="40dp" android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp" android:indeterminateTint="#B7F36B"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>

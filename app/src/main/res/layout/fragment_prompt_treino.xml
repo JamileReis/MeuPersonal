@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#101411"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Personalize seu treino"
+            android:textColor="#B7F36B"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Vamos montar seu plano"
+            android:textColor="#F4F5F2"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/inputObjetivo"
+            style="@style/MeuPersonalInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Objetivo (ex.: hipertrofia, força, emagrecimento)" />
+
+        <EditText
+            android:id="@+id/inputFrequencia"
+            style="@style/MeuPersonalInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Dias por semana (ex.: 4)"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/inputDuracao"
+            style="@style/MeuPersonalInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Duração por sessão em minutos (ex.: 60)"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/inputNivel"
+            style="@style/MeuPersonalInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Nível (iniciante, intermediário ou avançado)" />
+
+        <EditText
+            android:id="@+id/inputEquipamentos"
+            style="@style/MeuPersonalInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Equipamentos disponíveis" />
+
+        <EditText
+            android:id="@+id/inputLimitacoes"
+            style="@style/MeuPersonalInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Condição de hoje (opcional): dor, desconforto ou cansaço"
+            android:minLines="2"
+            android:gravity="top"
+            android:inputType="textMultiLine" />
+
+        <EditText
+            android:id="@+id/inputPreferencias"
+            style="@style/MeuPersonalInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Preferências e exercícios que deseja evitar"
+            android:minLines="2"
+            android:gravity="top"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/textErroGeracao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FF8A80"
+            android:visibility="gone"
+            android:paddingTop="8dp" />
+
+        <Button
+            android:id="@+id/btnGerarTreino"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:text="Gerar meu treino com IA"
+            android:textAllCaps="false"
+            android:textColor="#101411"
+            android:textStyle="bold"
+            android:backgroundTint="#B7F36B" />
+
+    </LinearLayout>
+</ScrollView>

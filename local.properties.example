@@ -1,0 +1,6 @@
+# Copie para local.properties e preencha localmente.
+# Nunca comite local.properties.
+SUPABASE_URL=https://rvpiffozkzygbsamntwc.supabase.co
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_geOcwtIIfy2bbDU-5ErfYQ_KvTfMvv4
+GEMINI_TRAINING_API_KEY=
+GEMINI_IMAGE_API_KEY=

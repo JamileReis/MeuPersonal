@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#111612"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MEU PERSONAL / PERFIL"
+            android:textColor="#B2F45B"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Meu perfil"
+            android:textColor="#F2F4F1"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Suas informações ajudam a personalizar seus treinos."
+            android:textColor="#A7AEA7"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/inputNome"
+            style="@style/ProfileInput"
+            android:hint="Nome completo" />
+
+        <EditText
+            android:id="@+id/inputIdade"
+            style="@style/ProfileInput"
+            android:hint="Idade"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/inputPeso"
+            style="@style/ProfileInput"
+            android:hint="Peso (kg)"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/inputAltura"
+            style="@style/ProfileInput"
+            android:hint="Altura (cm)"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/inputObjetivo"
+            style="@style/ProfileInput"
+            android:hint="Objetivo de treino" />
+
+        <EditText
+            android:id="@+id/inputLimitacoes"
+            style="@style/ProfileInput"
+            android:hint="Limitações ou restrições"
+            android:gravity="top"
+            android:minLines="3" />
+
+        <EditText
+            android:id="@+id/inputPreferencias"
+            style="@style/ProfileInput"
+            android:hint="Preferências de treinamento"
+            android:gravity="top"
+            android:minLines="3" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="CONTA"
+            android:textColor="#B2F45B"
+            android:textStyle="bold"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/textEmailConta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#F2F4F1"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnSalvarPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#B2F45B"
+            android:text="SALVAR PERFIL"
+            android:textColor="#111612"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnSairConta"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#343D35"
+            android:text="SAIR DA CONTA"
+            android:textColor="#F2F4F1" />
+
+    </LinearLayout>
+</ScrollView>

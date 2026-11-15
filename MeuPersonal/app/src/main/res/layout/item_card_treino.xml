@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="10dp" android:orientation="vertical" android:padding="16dp" android:background="#202720" android:clickable="true" android:focusable="true">
+    <TextView android:id="@+id/textNomeExercicio" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Exercício" android:textColor="#F4F5F2" android:textSize="17sp" android:textStyle="bold" />
+    <TextView android:id="@+id/textSeriesReps" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="7dp" android:text="3 séries · 10 repetições" android:textColor="#B7F36B" android:textSize="14sp" />
+    <TextView android:id="@+id/textDescanso" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Descanso: 60 segundos" android:textColor="#A8B0A8" android:textSize="13sp" />
+</LinearLayout>
