@@ -51,5 +51,4 @@ public final class MainActivity  extends AppCompatActivity {
                 || id == R.id.especificacoesFragment;
         bottomNavigation.setVisibility(topLevel ? View.VISIBLE : View.GONE);
     }
-
 }
