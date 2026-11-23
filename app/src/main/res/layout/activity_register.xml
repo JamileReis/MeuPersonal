@@ -23,7 +23,7 @@
             android:inputType="textEmailAddress" android:paddingHorizontal="16dp"
             android:textColor="#F4F5F2" android:textColorHint="#8C958C" android:backgroundTint="#3A443B" />
         <EditText android:id="@+id/editSenhaCadastro" android:layout_width="match_parent"
-            android:layout_height="56dp" android:layout_marginBottom="18dp" android:hint="Senha (mínimo 8 caracteres)"
+            android:layout_height="56dp" android:layout_marginBottom="18dp" android:hint="Senha (mínimo 6 caracteres)"
             android:inputType="textPassword" android:paddingHorizontal="16dp"
             android:textColor="#F4F5F2" android:textColorHint="#8C958C" android:backgroundTint="#3A443B" />
         <Button android:id="@+id/btnCriarConta" android:layout_width="match_parent"

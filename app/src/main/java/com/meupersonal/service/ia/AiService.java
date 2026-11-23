@@ -12,8 +12,5 @@ public interface AiService {
     String generateExerciseDescription(Exercise exercise)
             throws IOException;
 
-    String generateExerciseImage(Exercise exercise)
-            throws IOException;
-
     String sendPrompt(String prompt) throws IOException;
 }

@@ -1,5 +1,7 @@
 package com.meupersonal.presentation.auth;
 
+
+
 import android.app.Application;
 
 import androidx.annotation.NonNull;
@@ -50,10 +52,44 @@ public final class AuthViewModel extends AndroidViewModel {
     public void resendConfirmation(String email) {
         executor.execute(() -> {
             try {
-                new SupabaseAuthService().resendConfirmation(email);
+                repository.resendConfirmation(email);
                 authState.postValue(new AuthUiState(
-                        AuthUiState.Type.SUCCESS,
-                        "Se a conta existir, uma nova confirmação foi enviada. Verifique também o spam."
+                        AuthUiState.Type.CONFIRMATION_SENT,
+                        "Se a conta estiver cadastrada e precisar de confirmação, enviaremos um novo e-mail. Verifique sua caixa de entrada e o spam."
+                ));
+            } catch (Exception error) {
+                authState.postValue(new AuthUiState(
+                        AuthUiState.Type.ERROR,
+                        friendlyMessage(error)
+                ));
+            }
+        });
+    }
+
+    public void recoverPassword(String email) {
+        executor.execute(() -> {
+            try {
+                repository.recoverPassword(email);
+                authState.postValue(new AuthUiState(
+                        AuthUiState.Type.PASSWORD_RECOVERY_SENT,
+                        "Se existir uma conta para esse e-mail, enviaremos as instruções de recuperação. Verifique também o spam."
+                ));
+            } catch (Exception error) {
+                authState.postValue(new AuthUiState(
+                        AuthUiState.Type.ERROR,
+                        friendlyMessage(error)
+                ));
+            }
+        });
+    }
+
+    public void updatePassword(String accessToken, String password) {
+        executor.execute(() -> {
+            try {
+                repository.updatePassword(accessToken, password);
+                authState.postValue(new AuthUiState(
+                        AuthUiState.Type.PASSWORD_UPDATED,
+                        "Senha atualizada. Entre com a nova senha."
                 ));
             } catch (Exception error) {
                 authState.postValue(new AuthUiState(

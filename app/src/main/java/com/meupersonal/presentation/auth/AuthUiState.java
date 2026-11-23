@@ -1,7 +1,15 @@
 package com.meupersonal.presentation.auth;
 
 public final class AuthUiState {
-    public enum Type { SUCCESS, EMAIL_CONFIRMATION, ERROR }
+    public enum Type {
+        SUCCESS,
+        EMAIL_CONFIRMATION,
+        CONFIRMATION_SENT,
+        PASSWORD_RECOVERY_SENT,
+        PASSWORD_UPDATED,
+        ERROR
+    }
+
     private final Type type;
     private final String message;
 
@@ -10,6 +18,11 @@ public final class AuthUiState {
         this.message = message == null ? "" : message;
     }
 
-    public Type getType() { return type; }
-    public String getMessage() { return message; }
+    public Type getType() {
+        return type;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

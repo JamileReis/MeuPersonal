@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.meupersonal.data.LocalWorkoutStore;
+import com.meupersonal.service.treino.StarterWorkoutSeeder;
 
 public final class DashboardViewModel extends AndroidViewModel {
 
@@ -38,6 +39,7 @@ public final class DashboardViewModel extends AndroidViewModel {
         LocalWorkoutStore store = new LocalWorkoutStore(application);
 
         try {
+            StarterWorkoutSeeder.ensureAvailable(application, store);
             LocalWorkoutStore.PlanRecord plan = store.getLatestPlan();
 
             int treinosConcluidos = store.countCompletedSessionsLastDays(7);

@@ -1,26 +1,29 @@
-
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
 }
 
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.inputStream().use {
-        localProperties.load(it)
+val propriedadesLocais = Properties().apply {
+    val arquivo = rootProject.file("local.properties")
+    if (arquivo.exists()) {
+        arquivo.inputStream().use {
+            load(it)
+        }
     }
 }
 
-fun getLocalProperty(key: String): String {
-    return localProperties.getProperty(key, "")
-}
+val supabaseUrl = propriedadesLocais.getProperty("SUPABASE_URL", "")
+val supabaseChave = propriedadesLocais.getProperty("SUPABASE_PUBLISHABLE_KEY", "")
+val geminiApiKey = propriedadesLocais.getProperty("GEMINI_API_KEY", "")
 
 android {
-    namespace = "com.meupersonal"
-    compileSdk = 37
+
+        namespace = "com.meupersonal"
+
+    compileSdk {
+        version = release(37)
+    }
 
     defaultConfig {
         applicationId = "com.meupersonal"
@@ -29,22 +32,24 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         buildConfigField(
             "String",
             "SUPABASE_URL",
-            "\"${getLocalProperty("SUPABASE_URL")}\""
+            "\"$supabaseUrl\""
         )
 
         buildConfigField(
             "String",
             "SUPABASE_PUBLISHABLE_KEY",
-            "\"${getLocalProperty("SUPABASE_PUBLISHABLE_KEY")}\""
+            "\"$supabaseChave\""
         )
 
         buildConfigField(
             "String",
             "GEMINI_API_KEY",
-            "\"${getLocalProperty("GEMINI_API_KEY")}\""
+            "\"${geminiApiKey.replace("\"", "\\\"")}\""
         )
     }
 
@@ -54,7 +59,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            optimization {
+                enable = false
+            }
         }
     }
 
@@ -72,14 +79,12 @@ dependencies {
     implementation(libs.material)
 
     implementation("androidx.room:room-runtime:2.8.3")
-
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
+    annotationProcessor("androidx.room:room-compiler:2.8.3")
 
     compileOnly("org.projectlombok:lombok:1.18.42")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
-
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:5.14.2")
@@ -87,4 +92,7 @@ dependencies {
 
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

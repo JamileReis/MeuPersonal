@@ -42,6 +42,18 @@ public final class AuthRepository {
         return session;
     }
 
+    public void resendConfirmation(String email) throws Exception {
+        authService.resendConfirmation(email);
+    }
+
+    public void recoverPassword(String email) throws Exception {
+        authService.recoverPassword(email);
+    }
+
+    public void updatePassword(String accessToken, String password) throws Exception {
+        authService.updatePassword(accessToken, password);
+    }
+
     public boolean restoreSession() {
         AuthSession session = sessionStore.read();
 
