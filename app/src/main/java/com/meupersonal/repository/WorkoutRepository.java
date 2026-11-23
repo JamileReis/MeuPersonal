@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class WorkoutRepository {
-
     private final WorkoutDao workoutDao;
 
     public WorkoutRepository(WorkoutDao workoutDao) {

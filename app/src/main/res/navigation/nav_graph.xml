@@ -18,11 +18,6 @@
         app:destination="@id/dashboardFragment"
         app:popUpTo="@id/loginFragment"
         app:popUpToInclusive="true" />
-    <action
-        android:id="@+id/action_global_reset_password"
-        app:destination="@id/redefinirSenhaFragment"
-        app:popUpTo="@id/loginFragment"
-        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/loginFragment"
@@ -43,7 +38,6 @@
         android:name="com.meupersonal.presentation.dashboard.DashboardFragment"
         android:label="Início">
         <action android:id="@+id/action_dashboard_to_treino_dia" app:destination="@id/treinoDiaFragment" />
-        <action android:id="@+id/action_dashboard_to_prompt" app:destination="@id/promptTreinoFragment" />
     </fragment>
 
     <fragment
@@ -82,10 +76,5 @@
         android:id="@+id/promptTreinoFragment"
         android:name="com.meupersonal.presentation.treino.PromptTreinoFragment"
         android:label="Personalizar treino" />
-
-    <fragment
-        android:id="@+id/redefinirSenhaFragment"
-        android:name="com.meupersonal.presentation.login.RedefinirSenhaFragment"
-        android:label="Redefinir senha" />
 
 </navigation>

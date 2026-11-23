@@ -17,6 +17,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.meupersonal.R;
 import com.meupersonal.data.LocalWorkoutStore;
+import com.meupersonal.service.treino.StarterWorkoutSeeder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +59,7 @@ import java.util.List;
             finishButton = view.findViewById(R.id.btnFinalizarTreino);
 
             store = new LocalWorkoutStore(requireContext());
+            StarterWorkoutSeeder.ensureAvailable(requireContext(), store);
             Bundle arguments = getArguments();
             long requestedPlanId = arguments == null ? -1L : arguments.getLong("plan_id", -1L);
             planRecord = requestedPlanId >= 0 ? store.getPlan(requestedPlanId) : store.getLatestPlan();

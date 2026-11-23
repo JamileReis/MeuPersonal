@@ -1,5 +1,4 @@
 package com.meupersonal.service.ia;
-import android.util.Base64;
 
 import com.meupersonal.BuildConfig;
 import com.meupersonal.model.questionario.Questionnaire;
@@ -16,11 +15,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class GeminiAiService implements AiService {
-    public static final String TRAINING_API_KEY = BuildConfig.GEMINI_TRAINING_API_KEY;
-    public static final String IMAGE_API_KEY = BuildConfig.GEMINI_IMAGE_API_KEY;
-
+    public static final String TRAINING_API_KEY = BuildConfig.GEMINI_API_KEY;
     private static final String BASE =
             "https://generativelanguage.googleapis.com/v1beta/models/";
+
 
     private static final String API_URL =
             BASE + "gemini-3.8-flash:generateContent";
@@ -31,10 +29,8 @@ public class GeminiAiService implements AiService {
             BASE + "gemini-3.5-flash-lite:generateContent"
     };
 
-    private static final String IMAGE_API_URL =
-            BASE + "gemini-2.5-flash-image:generateContent";
-
-    private static final int MAX_TENTATIVAS = 3;
+    private final String chaveApiTreino;
+    private static final int MAX_TENTATIVAS = 2;
 
     private static final String SYSTEM_PROMPT =
             "Você é o assistente de treino do MeuPersonal. " +
@@ -43,31 +39,22 @@ public class GeminiAiService implements AiService {
                     "ou limitações. Priorize a segurança dos exercícios.";
 
     private static final int TEMPO_CONEXAO_MS = 20_000;
-    private static final int TEMPO_RESPOSTA_MS = 180_000;
-    private static final int MAX_TOKENS = 12288;
-
-    private final String chaveApiTreino;
-    private final String chaveApiImagem;
+    private static final int TEMPO_RESPOSTA_MS = 90_000;
+    private static final int MAX_TOKENS = 8192;
 
     public GeminiAiService() {
-        this(TRAINING_API_KEY, IMAGE_API_KEY);
+        this(TRAINING_API_KEY);
     }
     public GeminiAiService(String chaveApi) {
-        this(chaveApi, chaveApi);
+        this.chaveApiTreino = validarChave(chaveApi);
     }
-    public GeminiAiService(String chaveApiTreino, String chaveApiImagem) {
+    private String validarChave(String chaveApiTreino) {
         if (chaveApiTreino == null || chaveApiTreino.trim().isEmpty()) {
             throw new IllegalArgumentException(
                     "A chave da API de treino do Gemini não foi configurada."
             );
         }
-        if (chaveApiImagem == null || chaveApiImagem.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "A chave da API de imagem do Gemini não foi configurada."
-            );
-        }
-        this.chaveApiTreino = chaveApiTreino.trim();
-        this.chaveApiImagem = chaveApiImagem.trim();
+        return chaveApiTreino.trim();
     }
 
     @Override
@@ -144,31 +131,6 @@ public class GeminiAiService implements AiService {
     }
 
     @Override
-    public String generateExerciseImage(Exercise exercise)
-            throws IOException {
-
-        if (exercise == null) {
-            throw new IllegalArgumentException(
-                    "O exercício não foi informado."
-            );
-        }
-
-        StringBuilder prompt = new StringBuilder();
-
-        prompt.append(
-                "Crie uma descrição visual detalhada para ilustrar "
-                        + "a execução correta deste exercício. "
-                        + "Descreva a posição do corpo, o equipamento, "
-                        + "o ângulo da imagem e as etapas do movimento. "
-                        + "Não afirme que um arquivo de imagem foi gerado.\n\n"
-        );
-
-        adicionarDadosExercicio(prompt, exercise);
-
-        return executar(prompt.toString(), false, 0.6);
-    }
-
-    @Override
     public String sendPrompt(String prompt) throws IOException {
 
         if (prompt == null || prompt.trim().isEmpty()) {
@@ -178,52 +140,6 @@ public class GeminiAiService implements AiService {
         }
 
         return executar(prompt, false, 0.7);
-    }
-
-    public byte[] generateWorkoutImage(String workoutName, String exerciseNames)
-            throws IOException {
-        if (workoutName == null || workoutName.trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome do treino não foi informado.");
-        }
-        String prompt = "Crie uma única ilustração educativa, clara e realista, "
-                + "em formato horizontal, que demonstre os exercícios deste treino. "
-                + "Mostre pessoas adultas com postura correta e equipamento adequado. "
-                + "Sem texto, letras, logotipos, marcas d'água ou informações médicas. "
-                + "Nome do treino: " + workoutName + ". Exercícios: "
-                + (exerciseNames == null ? "" : exerciseNames);
-        try {
-            JSONObject body = new JSONObject()
-                    .put("contents", new JSONArray().put(new JSONObject()
-                            .put("parts", new JSONArray().put(new JSONObject().put("text", prompt)))))
-                    .put("generationConfig", new JSONObject()
-                            .put("responseModalities", new JSONArray().put("TEXT").put("IMAGE")));
-            JSONObject response = new JSONObject(postJson(IMAGE_API_URL, body, chaveApiImagem));
-            JSONArray candidates = response.optJSONArray("candidates");
-            if (candidates != null && candidates.length() > 0) {
-                JSONObject candidate = candidates.optJSONObject(0);
-                JSONObject content = candidate == null ? null : candidate.optJSONObject("content");
-                JSONArray parts = content == null ? null : content.optJSONArray("parts");
-                if (parts != null) {
-                    for (int i = 0; i < parts.length(); i++) {
-                        JSONObject inline = parts.optJSONObject(i);
-                        JSONObject data = inline == null ? null : inline.optJSONObject("inlineData");
-                        if (data == null && inline != null) data = inline.optJSONObject("inline_data");
-                        if (data != null) {
-                            String encoded = data.optString("data", "");
-                            if (!encoded.isEmpty()) {
-                                try { return Base64.decode(encoded, Base64.DEFAULT); }
-                                catch (IllegalArgumentException e) {
-                                    throw new IOException("A imagem retornada pelo Gemini está inválida.", e);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            throw new IOException("O Gemini respondeu, mas não retornou dados de imagem. Tente novamente.");
-        } catch (JSONException e) {
-            throw new IOException("Não foi possível interpretar a imagem retornada pelo Gemini.", e);
-        }
     }
 
     private JSONObject montarCorpo(String prompt, boolean respostaJson,

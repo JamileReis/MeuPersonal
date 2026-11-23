@@ -1,8 +1,8 @@
 package com.meupersonal.data.auth;
 
 import com.meupersonal.model.auth.AuthSession;
-import com.meupersonal.service.SupabaseClient;
 import com.meupersonal.service.auth.SupabaseAuthException;
+import com.meupersonal.service.treino.SupabaseClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +14,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
 public final class SupabaseAuthService {
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 

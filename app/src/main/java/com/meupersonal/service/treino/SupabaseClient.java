@@ -1,8 +1,7 @@
-package com.meupersonal.service;
+package com.meupersonal.service.treino;
 
 import com.meupersonal.BuildConfig;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -50,13 +49,13 @@ public final class SupabaseClient {
 
         if (url == null || url.trim().isEmpty()) {
             throw new IllegalStateException(
-                    "SUPABASE_URL não configurada."
+                    "SUPABASE_URL vazia no BuildConfig. Confira local.properties na raiz do projeto aberto no Android Studio e execute Sync Project with Gradle Files."
             );
         }
 
         if (key == null || key.trim().isEmpty()) {
             throw new IllegalStateException(
-                    "SUPABASE_PUBLISHABLE_KEY não configurada."
+                    "SUPABASE_PUBLISHABLE_KEY vazia no BuildConfig. Confira local.properties na raiz do projeto aberto no Android Studio e execute Sync Project with Gradle Files."
             );
         }
 

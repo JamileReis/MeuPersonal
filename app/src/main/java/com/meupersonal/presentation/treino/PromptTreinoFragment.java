@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -132,19 +133,28 @@ public final class PromptTreinoFragment extends Fragment{
                     );
 
                     long createdAt = System.currentTimeMillis();
-                    new LocalWorkoutStore(appContext).savePlan(
+                    String remoteClientId = UUID.randomUUID().toString();
+                    LocalWorkoutStore localStore = new LocalWorkoutStore(appContext);
+                    long localPlanId = localStore.savePlan(
                             title,
                             objectiveText,
                             plan.toString(),
-                            createdAt
+                            createdAt,
+                            remoteClientId
                     );
 
                     AuthSession session = new SecureSessionStore(appContext).read();
                     if (session != null) {
                         try {
-                            new SupabaseDataService().createPlan(
-                                    session, title, objectiveText, plan.toString(), createdAt
+                            new SupabaseDataService().syncPlan(
+                                    session,
+                                    remoteClientId,
+                                    title,
+                                    objectiveText,
+                                    plan.toString(),
+                                    createdAt
                             );
+                            localStore.markPlanSynced(localPlanId);
                         } catch (IOException remoteError) {
                             android.util.Log.w(
                                     "MeuPersonal",

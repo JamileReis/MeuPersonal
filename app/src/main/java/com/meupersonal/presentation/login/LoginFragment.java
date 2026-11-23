@@ -23,6 +23,8 @@ public final class LoginFragment extends Fragment {
     private EditText emailInput;
     private EditText passwordInput;
     private Button loginButton;
+    private TextView forgotLink;
+    private TextView resendLink;
     private ProgressBar progress;
     private AuthViewModel viewModel;
 
@@ -35,9 +37,13 @@ public final class LoginFragment extends Fragment {
         loginButton = view.findViewById(R.id.btnLogin);
         progress = view.findViewById(R.id.progressLogin);
         TextView registerLink = view.findViewById(R.id.btnAlternarModo);
+        forgotLink = view.findViewById(R.id.btnEsqueceuSenha);
+        resendLink = view.findViewById(R.id.btnReenviarConfirmacao);
         viewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
 
         loginButton.setOnClickListener(v -> submitLogin());
+        forgotLink.setOnClickListener(v -> requestPasswordRecovery());
+        resendLink.setOnClickListener(v -> resendConfirmation());
         registerLink.setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigate(R.id.action_login_to_register));
 
@@ -71,9 +77,33 @@ public final class LoginFragment extends Fragment {
         viewModel.login(email, password);
     }
 
+    private void resendConfirmation() {
+        String email = emailInput.getText().toString().trim();
+        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInput.setError("Informe o e-mail cadastrado para reenviar a confirmação.");
+            emailInput.requestFocus();
+            return;
+        }
+        setLoading(true);
+        viewModel.resendConfirmation(email);
+    }
+
+    private void requestPasswordRecovery() {
+        String email = emailInput.getText().toString().trim();
+        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInput.setError("Informe seu e-mail para receber o link de recuperação.");
+            emailInput.requestFocus();
+            return;
+        }
+        setLoading(true);
+        viewModel.recoverPassword(email);
+    }
+
     private void setLoading(boolean loading) {
         progress.setVisibility(loading ? View.VISIBLE : View.GONE);
         loginButton.setEnabled(!loading);
+        forgotLink.setEnabled(!loading);
+        resendLink.setEnabled(!loading);
         emailInput.setEnabled(!loading);
         passwordInput.setEnabled(!loading);
     }

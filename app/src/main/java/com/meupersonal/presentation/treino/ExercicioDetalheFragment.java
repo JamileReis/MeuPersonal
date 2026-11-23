@@ -1,5 +1,6 @@
 package com.meupersonal.presentation.treino;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,12 +19,14 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.meupersonal.R;
 import com.meupersonal.data.LocalWorkoutStore;
-import com.meupersonal.service.ia.GeminiAiService;
+import com.meupersonal.service.media.MediaGenerationService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -126,7 +129,8 @@ public final class ExercicioDetalheFragment extends Fragment {
                     "Não foi possível abrir este exercício.");
 
             imageStatus.setText(
-                    "Dados do exercício inválidos: " + exception.getMessage()
+                    "Dados do exercício inválidos: "
+                            + exception.getMessage()
             );
 
             progress.setVisibility(View.GONE);
@@ -163,8 +167,8 @@ public final class ExercicioDetalheFragment extends Fragment {
         }
 
         String formattedLoad = load == Math.floor(load)
-                ? String.format(java.util.Locale.getDefault(), "%.0f", load)
-                : String.format(java.util.Locale.getDefault(), "%.1f", load);
+                ? String.format(Locale.getDefault(), "%.0f", load)
+                : String.format(Locale.getDefault(), "%.1f", load);
 
         return "Carga inicial sugerida: " + formattedLoad + " kg"
                 + appendNote(loadNote);
@@ -180,74 +184,143 @@ public final class ExercicioDetalheFragment extends Fragment {
             Bundle args,
             JSONObject exercise
     ) {
-        long planId = args.getLong("plan_id", -1L);
-        int dayIndex = args.getInt("day_index", -1);
-        int exerciseIndex = args.getInt("exercise_index", -1);
+        long planId = args == null ? -1L : args.getLong("plan_id", -1L);
+        int dayIndex = args == null ? -1 : args.getInt("day_index", -1);
+        int exerciseIndex = args == null ? -1 : args.getInt("exercise_index", -1);
 
-        String exerciseName = exercise.optString(
-                "nome",
-                "Exercício"
-        );
+        String exerciseName = exercise.optString("nome", "Exercício");
+        String group = exercise.optString("grupoMuscular", "");
+        String description = exercise.optString("descricao", "");
 
-        String group = exercise.optString(
-                "grupoMuscular",
-                ""
-        );
+        Context appContext = requireContext().getApplicationContext();
 
-        String description = exercise.optString(
-                "descricao",
-                ""
-        );
-
-        LocalWorkoutStore store =
-                new LocalWorkoutStore(requireContext());
+        LocalWorkoutStore store = new LocalWorkoutStore(appContext);
 
         executor.execute(() -> {
+            MediaGenerationService media = null;
+
             try {
-                byte[] cached = planId >= 0
-                        && dayIndex >= 0
-                        && exerciseIndex >= 0
-                        ? store.getExerciseImage(
-                        planId,
-                        dayIndex,
-                        exerciseIndex
-                )
-                        : null;
+                byte[] cached = null;
+
+                if (planId >= 0 && dayIndex >= 0 && exerciseIndex >= 0) {
+                    cached = store.getExerciseImage(
+                            planId,
+                            dayIndex,
+                            exerciseIndex
+                    );
+                }
 
                 if (cached != null && cached.length > 0) {
-                    showImage(cached, "Demonstração do exercício");
+                    showImage(cached, "Imagem instrucional (cache offline)");
                     return;
                 }
 
-                byte[] generated = new GeminiAiService()
-                        .generateWorkoutImage(
-                                exerciseName,
-                                group + ". " + description
-                        );
-
-                if (generated == null || generated.length == 0) {
-                    throw new IOException(
-                            "O Gemini não retornou uma imagem."
-                    );
-                }
-
-                if (planId >= 0
-                        && dayIndex >= 0
-                        && exerciseIndex >= 0) {
-                    store.saveExerciseImage(
-                            planId,
-                            dayIndex,
-                            exerciseIndex,
-                            generated
-                    );
-                }
-
-                showImage(
-                        generated,
-                        "Imagem demonstrativa gerada por IA"
+                String prompt = buildExerciseImagePrompt(
+                        exerciseName,
+                        group,
+                        description
                 );
 
-            } catch (IOException | RuntimeException exception) {
+                media = new MediaGenerationService();
+
+                MediaGenerationService service = media;
+
+                service.generateExerciseImage(
+                        prompt,
+                        new MediaGenerationService.ImageCallback() {
+
+                            @Override
+                            public void onSuccess(Bitmap bitmap) {
+                                if (bitmap == null) {
+                                    showImageError(
+                                            "O Gemini não retornou uma imagem válida."
+                                    );
+                                    service.shutdown();
+                                    return;
+                                }
+
+                                try {
+                                    ByteArrayOutputStream output =
+                                            new ByteArrayOutputStream();
+
+                                    boolean compressed = bitmap.compress(
+                                            Bitmap.CompressFormat.PNG,
+                                            100,
+                                            output
+                                    );
+
+                                    if (!compressed) {
+                                        throw new IOException(
+                                                "Não foi possível converter a imagem."
+                                        );
+                                    }
+
+                                    byte[] imageBytes = output.toByteArray();
+
+                                    if (imageBytes.length == 0) {
+                                        throw new IOException(
+                                                "A imagem gerada está vazia."
+                                        );
+                                    }
+
+                                    try {
+                                        executor.execute(() -> {
+                                        try {
+                                            if (planId >= 0
+                                                    && dayIndex >= 0
+                                                    && exerciseIndex >= 0) {
+
+                                                store.saveExerciseImage(
+                                                        planId,
+                                                        dayIndex,
+                                                        exerciseIndex,
+                                                        imageBytes
+                                                );
+                                            }
+
+                                            showImage(
+                                                    imageBytes,
+                                                    "Imagem instrucional (Gemini)"
+                                            );
+
+                                        } catch (RuntimeException exception) {
+                                            showImage(
+                                                    imageBytes,
+                                                    "Imagem gerada pelo Gemini"
+                                            );
+                                        } finally {
+                                            service.shutdown();
+                                        }
+                                        });
+                                    } catch (RuntimeException rejected) {
+                                        service.shutdown();
+                                    }
+
+                                } catch (IOException | RuntimeException exception) {
+                                    showImageError(
+                                            "Erro ao processar imagem: "
+                                                    + exception.getMessage()
+                                    );
+
+                                    service.shutdown();
+                                }
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                showImageError(
+                                        "Falha no Gemini: " + message
+                                );
+
+                                service.shutdown();
+                            }
+                        }
+                );
+
+            } catch (RuntimeException exception) {
+                if (media != null) {
+                    media.shutdown();
+                }
                 String message = exception.getMessage();
 
                 showImageError(
@@ -257,6 +330,26 @@ public final class ExercicioDetalheFragment extends Fragment {
                 );
             }
         });
+    }
+
+    private String buildExerciseImagePrompt(
+            String exerciseName,
+            String group,
+            String description
+    ) {
+        return "Crie uma imagem instrucional profissional para um "
+                + "aplicativo de treinamento físico. "
+                + "Exercício: " + exerciseName + ". "
+                + "Grupo muscular: " + group + ". "
+                + "Descrição: " + description + ". "
+                + "Mostre uma pessoa adulta executando corretamente "
+                + "o exercício, com anatomia realista, biomecânica "
+                + "adequada, postura correta e equipamento apropriado. "
+                + "Mostre o corpo inteiro e o movimento de maneira "
+                + "visualmente compreensível. "
+                + "Utilize fundo limpo de academia, boa iluminação "
+                + "e enquadramento profissional. "
+                + "Não inclua textos, logotipos ou marcas d'água.";
     }
 
     private void showImage(byte[] bytes, String label) {
@@ -272,7 +365,9 @@ public final class ExercicioDetalheFragment extends Fragment {
             );
 
             if (bitmap == null) {
-                showImageError("A API retornou dados que não formam uma imagem.");
+                showImageError(
+                        "O Gemini retornou dados que não formam uma imagem."
+                );
                 return;
             }
 

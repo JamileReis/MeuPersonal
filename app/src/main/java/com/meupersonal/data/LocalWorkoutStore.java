@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class LocalWorkoutStore extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "meu_personal_local.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 
     public LocalWorkoutStore(Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,7 +30,9 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
                 "title TEXT NOT NULL," +
                 "objective TEXT NOT NULL," +
                 "created_at INTEGER NOT NULL," +
-                "plan_json TEXT NOT NULL)");
+                "plan_json TEXT NOT NULL," +
+                "remote_client_id TEXT," +
+                "remote_synced INTEGER NOT NULL DEFAULT 0)");
 
         db.execSQL("CREATE TABLE plan_images (" +
                 "plan_id INTEGER NOT NULL," +
@@ -57,9 +59,38 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
+        if (oldVersion < 3) {
             createExerciseImagesTable(db);
         }
+        ensurePlanSyncColumns(db);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        // Também repara bancos parcialmente migrados cuja versão já foi incrementada.
+        ensurePlanSyncColumns(db);
+    }
+
+    private void ensurePlanSyncColumns(SQLiteDatabase db) {
+        addColumnIfMissing(db, "remote_client_id", "TEXT");
+        addColumnIfMissing(db, "remote_synced", "INTEGER NOT NULL DEFAULT 0");
+    }
+
+    private void addColumnIfMissing(
+            SQLiteDatabase db,
+            String columnName,
+            String columnDefinition
+    ) {
+        try (Cursor cursor = db.rawQuery("PRAGMA table_info(plans)", null)) {
+            int nameColumn = cursor.getColumnIndexOrThrow("name");
+            while (cursor.moveToNext()) {
+                if (columnName.equals(cursor.getString(nameColumn))) {
+                    return;
+                }
+            }
+        }
+        db.execSQL("ALTER TABLE plans ADD COLUMN " + columnName + " " + columnDefinition);
     }
 
     private void createExerciseImagesTable(SQLiteDatabase db) {
@@ -121,19 +152,33 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
             String json,
             long createdAt
     ) {
+        return savePlan(title, objective, json, createdAt, null);
+    }
+
+    public long savePlan(
+            String title,
+            String objective,
+            String json,
+            long createdAt,
+            String remoteClientId
+    ) {
         ContentValues values = new ContentValues();
         values.put("title", title);
         values.put("objective", objective == null ? "" : objective);
         values.put("created_at", createdAt);
         values.put("plan_json", json);
-
+        if (remoteClientId == null || remoteClientId.trim().isEmpty()) {
+            values.putNull("remote_client_id");
+        } else {
+            values.put("remote_client_id", remoteClientId);
+        }
         return getWritableDatabase().insertOrThrow("plans", null, values);
     }
 
     public PlanRecord getPlan(long planId) {
         try (Cursor c = getReadableDatabase().query(
                 "plans",
-                new String[]{"id", "title", "objective", "created_at", "plan_json"},
+                new String[]{"id", "title", "objective", "created_at", "plan_json", "remote_client_id", "remote_synced"},
                 "id=?",
                 new String[]{String.valueOf(planId)},
                 null,
@@ -150,7 +195,9 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
                     c.getString(1),
                     c.getString(2),
                     c.getLong(3),
-                    c.getString(4)
+                    c.getString(4),
+                    c.isNull(5) ? null : c.getString(5),
+                    c.getInt(6) == 1
             );
         }
     }
@@ -158,7 +205,7 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
     public PlanRecord getLatestPlan() {
         try (Cursor c = getReadableDatabase().query(
                 "plans",
-                new String[]{"id", "title", "objective", "created_at", "plan_json"},
+                new String[]{"id", "title", "objective", "created_at", "plan_json", "remote_client_id", "remote_synced"},
                 null,
                 null,
                 null,
@@ -175,7 +222,9 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
                     c.getString(1),
                     c.getString(2),
                     c.getLong(3),
-                    c.getString(4)
+                    c.getString(4),
+                    c.isNull(5) ? null : c.getString(5),
+                    c.getInt(6) == 1
             );
         }
     }
@@ -185,7 +234,7 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
 
         try (Cursor c = getReadableDatabase().query(
                 "plans",
-                new String[]{"id", "title", "objective", "created_at", "plan_json"},
+                new String[]{"id", "title", "objective", "created_at", "plan_json", "remote_client_id", "remote_synced"},
                 null,
                 null,
                 null,
@@ -198,7 +247,9 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
                         c.getString(1),
                         c.getString(2),
                         c.getLong(3),
-                        c.getString(4)
+                        c.getString(4),
+                        c.isNull(5) ? null : c.getString(5),
+                        c.getInt(6) == 1
                 ));
             }
         }
@@ -221,6 +272,17 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
         )) {
             return cursor.moveToFirst() ? cursor.getInt(0) : 0;
         }
+    }
+
+    public void markPlanSynced(long planId) {
+        ContentValues values = new ContentValues();
+        values.put("remote_synced", 1);
+        getWritableDatabase().update(
+                "plans",
+                values,
+                "id=?",
+                new String[]{String.valueOf(planId)}
+        );
     }
 
     public void deletePlan(long planId) {
@@ -380,19 +442,25 @@ public final class LocalWorkoutStore extends SQLiteOpenHelper {
         public final String objective;
         public final long createdAt;
         public final String json;
+        public final String remoteClientId;
+        public final boolean remoteSynced;
 
         public PlanRecord(
                 long id,
                 String title,
                 String objective,
                 long createdAt,
-                String json
+                String json,
+                String remoteClientId,
+                boolean remoteSynced
         ) {
             this.id = id;
             this.title = title;
             this.objective = objective;
             this.createdAt = createdAt;
             this.json = json;
+            this.remoteClientId = remoteClientId;
+            this.remoteSynced = remoteSynced;
         }
     }
 

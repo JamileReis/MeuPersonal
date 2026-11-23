@@ -1,7 +1,7 @@
 package com.meupersonal.model.auth;
 
-import com.meupersonal.service.SupabaseClient;
 import com.meupersonal.service.auth.SupabaseAuthException;
+import com.meupersonal.service.treino.SupabaseClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -119,7 +119,6 @@ public final class SupabaseAuthService {
             if (message.isEmpty()) message = json.optString("error", "");
             if (!message.isEmpty()) return message;
         } catch (JSONException ignored) {
-            // A resposta pode não ser JSON.
         }
         return "Falha na autenticação (HTTP " + status + "). Verifique a conexão e tente novamente.";
     }

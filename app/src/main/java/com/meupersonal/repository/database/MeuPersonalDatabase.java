@@ -25,7 +25,6 @@ import com.meupersonal.repository.dao.WorkoutDao;
 )
 @TypeConverters(RoomConverters.class)
 public abstract class MeuPersonalDatabase extends RoomDatabase {
-
     private static volatile MeuPersonalDatabase instancia;
 
     public abstract WorkoutDao workoutDao();

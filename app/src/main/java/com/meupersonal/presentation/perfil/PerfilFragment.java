@@ -17,10 +17,17 @@ import com.meupersonal.R;
 import com.meupersonal.data.auth.SecureSessionStore;
 import com.meupersonal.model.auth.AuthSession;
 import com.meupersonal.presentation.auth.AuthViewModel;
+import com.meupersonal.service.SupabaseDataService;
+
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class PerfilFragment extends Fragment {
 
     private PerfilViewModel viewModel;
+    private final ExecutorService syncExecutor = Executors.newSingleThreadExecutor();
 
     private EditText nome;
     private EditText idade;
@@ -118,6 +125,7 @@ public final class PerfilFragment extends Fragment {
         );
 
         if (viewModel.salvarPerfil(perfil)) {
+            sincronizarPerfil(perfil);
             Toast.makeText(
                     requireContext(),
                     "Perfil salvo com sucesso",
@@ -130,5 +138,54 @@ public final class PerfilFragment extends Fragment {
                     Toast.LENGTH_SHORT
             ).show();
         }
+    }
+
+    private void sincronizarPerfil(PerfilViewModel.Perfil perfil) {
+        AuthSession session = new SecureSessionStore(requireContext()).read();
+        if (session == null) return;
+        syncExecutor.execute(() -> {
+            try {
+                JSONObject payload = new JSONObject()
+                        .put("full_name", perfil.nome)
+                        .put("age", perfil.idade > 0 ? perfil.idade : JSONObject.NULL)
+                        .put("weight_kg", numberOrNull(perfil.peso))
+                        .put("height_cm", numberOrNull(perfil.altura))
+                        .put("objective", perfil.objetivo)
+                        .put("limitations", perfil.limitacoes)
+                        .put("preferences", perfil.preferencias);
+                new SupabaseDataService().upsertProfile(session, payload);
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> Toast.makeText(
+                            requireContext(),
+                            "Perfil sincronizado com o Supabase",
+                            Toast.LENGTH_SHORT
+                    ).show());
+                }
+            } catch (Exception error) {
+                android.util.Log.w("MeuPersonal", "Perfil salvo localmente, mas não sincronizado.", error);
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> Toast.makeText(
+                            requireContext(),
+                            "Perfil salvo localmente, mas não sincronizado com o Supabase",
+                            Toast.LENGTH_LONG
+                    ).show());
+                }
+            }
+        });
+    }
+
+    private Object numberOrNull(String value) {
+        if (value == null || value.trim().isEmpty()) return JSONObject.NULL;
+        try {
+            return Double.parseDouble(value.replace(',', '.'));
+        } catch (NumberFormatException error) {
+            return JSONObject.NULL;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        syncExecutor.shutdownNow();
+        super.onDestroy();
     }
 }

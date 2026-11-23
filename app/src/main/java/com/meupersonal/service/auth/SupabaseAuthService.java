@@ -1,7 +1,7 @@
 package com.meupersonal.service.auth;
 
 import com.meupersonal.model.auth.AuthSession;
-import com.meupersonal.service.SupabaseClient;
+import com.meupersonal.service.treino.SupabaseClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,8 +13,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
 public final class SupabaseAuthService {
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    private static final String CONFIRM_REDIRECT = "meupersonal://auth/confirm";
+    private static final String RECOVERY_REDIRECT = "meupersonal://auth/reset";
 
     public AuthSession login(String email, String password) throws IOException {
         JSONObject body = new JSONObject();
@@ -38,7 +41,8 @@ public final class SupabaseAuthService {
         } catch (JSONException error) {
             throw new IOException("Não foi possível preparar o cadastro.", error);
         }
-        return executeSessionRequest("/auth/v1/signup", body);
+        return executeSessionRequest(
+                withRedirect("/auth/v1/signup", CONFIRM_REDIRECT), body);
     }
 
     public void resendConfirmation(String email) throws IOException {
@@ -49,19 +53,78 @@ public final class SupabaseAuthService {
         } catch (JSONException error) {
             throw new IOException("Não foi possível preparar o reenvio do e-mail.", error);
         }
+        executeEmailAction(
+                withRedirect("/auth/v1/resend", CONFIRM_REDIRECT), body);
+    }
+
+    public void recoverPassword(String email) throws IOException {
+        JSONObject body = new JSONObject();
+        try {
+            body.put("email", email);
+        } catch (JSONException error) {
+            throw new IOException("Não foi possível preparar a recuperação de senha.", error);
+        }
+        executeEmailAction(
+                withRedirect("/auth/v1/recover", RECOVERY_REDIRECT), body);
+    }
+
+    public void updatePassword(String accessToken, String password) throws IOException {
+        if (accessToken == null || accessToken.trim().isEmpty()) {
+            throw new IOException("O link de redefinição expirou. Solicite outro e-mail.");
+        }
+        if (password == null || password.length() < 8) {
+            throw new IOException("A nova senha deve ter pelo menos 8 caracteres.");
+        }
+
+        JSONObject payload = new JSONObject();
+        try {
+            payload.put("password", password);
+        } catch (JSONException error) {
+            throw new IOException("Falha ao preparar a nova senha.", error);
+        }
+
         Request request;
         try {
-            request = SupabaseClient.novaRequisicao("/auth/v1/resend")
+            request = SupabaseClient.novaRequisicao(
+                            "/auth/v1/user", accessToken)
                     .header("Content-Type", "application/json")
-                    .post(RequestBody.create(JSON, body.toString()))
+                    .put(RequestBody.create(JSON, payload.toString()))
                     .build();
         } catch (IllegalStateException error) {
             throw new IOException(error.getMessage(), error);
         }
+
         try (Response response = SupabaseClient.getCliente().newCall(request).execute()) {
             String responseBody = readBody(response);
             if (!response.isSuccessful()) {
-                throw new SupabaseAuthException(response.code(), parseError(responseBody, response.code()));
+                throw new SupabaseAuthException(
+                        response.code(), parseError(responseBody, response.code()));
+            }
+        }
+    }
+
+    private String withRedirect(String path, String redirectUri) {
+        return path + "?redirect_to=" + android.net.Uri.encode(redirectUri);
+    }
+
+    private void executeEmailAction(String path, JSONObject payload) throws IOException {
+        Request request;
+        try {
+            request = SupabaseClient.novaRequisicao(path)
+                    .header("Content-Type", "application/json")
+                    .post(RequestBody.create(JSON, payload.toString()))
+                    .build();
+        } catch (IllegalStateException error) {
+            throw new IOException(error.getMessage(), error);
+        }
+
+        try (Response response = SupabaseClient.getCliente().newCall(request).execute()) {
+            String responseBody = readBody(response);
+            if (!response.isSuccessful()) {
+                throw new SupabaseAuthException(
+                        response.code(),
+                        parseError(responseBody, response.code())
+                );
             }
         }
     }
@@ -144,7 +207,6 @@ public final class SupabaseAuthService {
             if (message.isEmpty()) message = json.optString("error", "");
             if (!message.isEmpty()) return message;
         } catch (JSONException ignored) {
-            // A resposta pode não ser JSON.
         }
         return "Falha na autenticação (HTTP " + status + "). Verifique a conexão e tente novamente.";
     }
