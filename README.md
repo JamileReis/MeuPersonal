@@ -88,11 +88,6 @@ app/src/main/java/com/meupersonal/
 ### Configuração de Chaves (`local.properties`)
 O projeto utiliza injeção de credenciais via `local.properties` para compilação segura no `BuildConfig`. Adicione as seguintes propriedades no arquivo `local.properties` na raiz do projeto:
 
-```properties
-GEMINI_API_KEY=sua_chave_api_google_gemini
-SUPABASE_URL=https://seu-projeto.supabase.co
-SUPABASE_PUBLISHABLE_KEY=sua_chave_publica_supabase
-```
 
 ### Compilação e Execução
 Via terminal:
